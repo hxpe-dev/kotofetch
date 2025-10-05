@@ -52,6 +52,7 @@ translation = "People believe what they want to believe."
 romaji = "Hito wa shinjitai mono o shinjiru"
 source = "Death Note"
 
+# 10
 [[quote]]
 japanese = "夢を諦めるな"
 translation = "Never give up on your dreams."
@@ -112,6 +113,7 @@ translation = "If you don't do it now, you'll never do it in your life!!"
 romaji = " ima yannei yatsu wa！ isshō yaryashinei n da !！"
 source = "Berserk"
 
+# 20
 [[quote]]
 japanese = "自分の手に負えないならケンカなんて仕掛けるんじゃないよ"
 translation = "Don't start a fight if it's beyond your control."
@@ -141,6 +143,104 @@ japanese = "君はヒーローになれる"
 translation = "You can become a hero."
 romaji = "Kimi wa hīrō ni nareru"
 source = "My Hero Academia (All Might)"
+
+[[quote]]
+japanese = "夢は大きく、欲は小さく。そういう気持ちで生きるようにしろ。"
+translation = "Dream big, want little. Live with that kind of attitude."
+romaji = "Yume wa ōkiku, yoku wa chiisaku. Sō iu kimochi de ikiru yō ni shiro"
+source = "Chibi Maruko-chan"
+
+[[quote]]
+japanese = "命にかかわること以外どーでもいいことばっかり..."
+translation = "Everything except life-threatening matters is no big deal..."
+romaji = "Inochi ni kakawaru koto igai dō demo ii koto bakkari..."
+source = "Chibi Maruko-chan"
+
+[[quote]]
+japanese = "怖い…自分の心に踏み込むのが怖い"
+translation = "Scary... It's scary to step into my own heart."
+romaji = "Kowai... jibun no kokoro ni fumikomu no ga kowai"
+source = "Erased"
+
+[[quote]]
+japanese = "善行も悪行も本質は同じ、人が自らの欠陥を補う為の行いに過ぎない"
+translation = "Good deeds and bad deeds are essentially the same, they're just actions people take to compensate for their own flaws."
+romaji = "Zenkō mo akkō mo honshitsu wa onaji, hito ga mizukara no ketsujō o oginau tame no okonai ni suginai"
+source = "Erased"
+
+# 30
+[[quote]]
+japanese = "このヒトデナシ！"
+translation = "You bastards!"
+romaji = "Kono hitodenashi!"
+source = "South Park"
+
+[[quote]]
+japanese = "認めたくないものだな。自分自身の若さ故の過ちというものを"
+translation = "None want to admit them. The mistakes we make in our youth."
+romaji = "Mitometakunai mono da na. Jibun jishin no wakasa yue no ayamachi to iu mono o"
+source = "Mobile Suit Gundam" 
+
+[[quote]]
+japanese = "こいつ…うごくぞ！"
+translation = "This thing... it moves!"
+romaji = "Koitsu... ugoku zo!"
+source = "Mobile Suit Gundam"
+
+[[quote]]
+japanese = "当たらなければどうという事はない！"
+translation = "If it doesn't hit, it doesn't matter!"
+romaji = "Ataranakereba dō to iu koto wa nai!"
+source = "Mobile Suit Gundam"
+
+[[quote]]
+japanese = "二度もぶった。親父にもぶたれた事ないのに！"
+translation = "You hit me twice! Even my father never hit me!"
+romaji = "Nidō mo butta. Oyaji ni mo butareta koto nai no ni!"
+source = "Mobile Suit Gundam"
+
+[[quote]]
+japanese = "ザクとは違うのだよ、ザクとは！"
+translation = "This is no Zaku, boy! No Zaku!"
+romaji = "Zaku to wa chigau no da yo, Zaku to wa!"
+source = "Mobile Suit Gundam"
+
+[[quote]]
+japanese = "坊やだからさ"
+translation = "Because [he was] a brat."
+romaji = "Bōya da kara sa"
+source = "Mobile Suit Gundam"
+
+[[quote]]
+japanese = "悲しいけどこれ戦争なのよね"
+translation = "It's sad, but this is war."
+romaji = "Kanashii kedo kore sensō nanoyone"
+source = "Mobile Suit Gundam" 
+
+[[quote]]
+japanese = "ごめんよ、僕にはまだ帰れる所があるんだ"
+translation = "I'm sorry, but I still have a home to return to."
+romaji = "Gomen yo, boku ni wa mada kaereru tokoro ga arun da"
+source = "Mobile Suit Gundam" 
+
+# 40
+[[quote]]
+japanese = "あんなの飾りです、偉い人にはそれがわからんのですよ"
+translation = "[Legs] are just for show. The higher-ups just don't get it."
+romaji = "Anna no kazari desu, erai hito ni wa sore ga wakaran no desu yo"
+source = "Mobile Suit Gundam"
+
+[[quote]]
+japanese = "俺がガンダムだ！"
+translation = "I am Gundam!"
+romaji = "Ore ga Gandamu da!"
+source = "Mobile Suit Gundam 00"
+
+[[quote]]
+japanese = "逃げたら一つ、進めば二つ"
+translation = "Run and gain one, move forward and gain two."
+romaji = "Nigetara hitotsu, susumeba futatsu"
+source = "Mobile Suit Gundam: The Witch from Mercury"
 
 [[quote]]
 japanese = "今日も一日がんばるぞい！"

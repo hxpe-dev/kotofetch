@@ -52,6 +52,7 @@ translation = "Buddhist prayers in a horse’s ear—preaching to deaf ears."
 romaji = "Uma no mimi ni nenbutsu"
 source = "Japanese proverb"
 
+# 10
 [[quote]]
 japanese = "虎穴に入らずんば虎子を得ず"
 translation = "You cannot get a tiger cub without entering the tiger’s cave."
@@ -88,8 +89,61 @@ translation = "The way of the master is pain."
 romaji = "Shi no michi wa kurushimi da"
 source = "Japanese proverb"
 
+# orig latin, commonly adopted in jp
+[[quote]]
+japanese = "類は友を呼ぶ"
+translation = "Simile simili gaudet—birds of a feather flock together."
+romaji = "Rui wa tomo o yobu"
+source = "Adopted proverb"
+
+[[quote]]
+japanese = "阿吽の呼吸"
+translation = "Wordless synchronicity."
+romaji = "Aun no kokyū"
+source = "Japanese proverb"
+
+[[quote]]
+japanese = "急がば回れ"
+translation = "In a hurry, go the long way around."
+romaji = "Isogeba maware"
+source = "Japanese proverb"
+
+# orig en, commonly adopted in jp
+[[quote]]
+japanese = "転石苔を生ぜず"
+translation = "A rolling stone gathers no moss."
+romaji = "Tenseki koke o shōsezu"
+source = "Adopted proverb"
+
+# 20
+[[quote]]
+japanese = "鳶が鷹を生む"
+translation = "A kite gives birth to a hawk."
+romaji = "Tobi ga taka o umu"
+source = "Japanese proverb"
+
+[[quote]]
+japanese = "壁に耳あり障子に目あり"
+translation = "Walls have ears, screens have eyes."
+romaji = "Kabe ni mimi ari shōji ni me ari"
+source = "Japanese proverb" 
+
+# I am not sure how to concisely translate this one. It is originally cautionary, however these days it is used oppositely. I really like the phrase
+[[quote]]
+japanese = "犬も歩けば棒に当たる"
+translation = "A walking dog may get hit by a stick—Nothing ventured, nothing gained."
+romaji = "Inu mo arukeba bō ni ataru"
+source = "Japanese proverb"
+
+# internet culture
 [[quote]]
 japanese = "昨日は歴史、明日は未知、しかし今日は贈り物。だから「プレゼント」と呼ばれるのです。"
 translation = "Yesterday is history, Tomorrow is a mystery, but Today is a gift. That is why it is called the present."
 romaji = "Kinō wa rekishi, ashita wa michi, shikashi kyō wa okurimono. Dakara 'purezento' to yobareru no desu."
 source = "Master Oogway"
+
+[[quote]]
+japanese = "ゆっくりしていってね!!!"
+translation = "Take it easy~!!!"
+romaji = "Yukkuri shite itte ne!!!"
+source = "Yukkuri Marisa & Yukkuri Reimu"

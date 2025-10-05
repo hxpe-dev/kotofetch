@@ -52,6 +52,7 @@ translation = "Spring rain—\nIt wets the river’s surface,\nA little boat flo
 romaji = "Harusame ya\nKawamo o nurasu\nKobune kana"
 source = "Matsuo Bashō"
 
+# 10
 [[quote]]
 japanese = "朝顔に\nつるべ取られて\nもらい水"
 translation = "Morning glory—\nMy well bucket was taken,\nGot water from neighbor."
@@ -75,3 +76,94 @@ japanese = "春の山\n霞たなびく\n花の声"
 translation = "Spring mountains—\nMist floats by,\nVoices of flowers."
 romaji = "Haru no yama\nKasumi tanabiku\nHana no koe"
 source = "Matsuo Bashō"
+
+[[quote]]
+japanese = "松島や\nああ松島や\n松島かな"
+translation = "Matsushima! Ah, Matsushima! Matsushima?"
+romaji = "Matsushima ya\nAa Matsushima ya\nMatsushima kana"
+source = "Tawara Bo"
+
+[[quote]]
+japanese = "荒海や\n佐渡に横たふ\n天の川"
+translation = "Rough sea—\nStretching across to Sado,\nThe Milky Way."
+romaji = "Araumi ya\nSado ni yokotau\nAmanogawa"
+source = "Matsuo Bashō"
+
+[[quote]]
+japanese = "菜の花や\n月は東に\n日は西に"
+translation = "Rapeseed blossoms—\nThe moon in the east,\nThe sun in the west."
+romaji = "Nanohana ya\nTsuki wa higashi ni\nHi wa nishi ni"
+source = "Yosa Buson"
+
+[[quote]]
+japanese = "五月雨を\nあつめて早し\n最上川"
+translation = "Gathering the rains—\nSwift is the flow\nOf the Mogami River."
+romaji = "Samidare o\nAtsumete hayashi\nMogamigawa"
+source = "Matsuo Bashō"
+
+[[quote]]
+japanese = "おもしろき\nこともなき世を\nおもしろく"
+translation = "A world of nothing—\nYet I make it\nFull of wonder."
+romaji = "Omosoroki\nKoto mo naki yo o\nOmosoroku"
+source = "Takarai Kikaku"
+
+[[quote]]
+japanese = "梅が香に\nのっと日の出る\n山路哉"
+translation = "Amidst the plum blossoms' fragrance,\nThe sun rises abruptly—\nMountain path in spring."
+romaji = "Ume ga kā ni\nNotto hi no deru\nYamaji kana"
+source = "Matsuo Bashō"
+
+# 20
+[[quote]]
+japanese = "やせ蛙\n負けるな一茶\nこれにあり"
+translation = "Lean frog,\nDon't lose—one Issa\nIs here with you."
+romaji = "Yase gaeru\nMakeru na Issa\nKore ni ari"
+source = "Kobayashi Issa"
+
+[[quote]]
+japanese = "柿食えば\n鐘が鳴るなり\n法隆寺"
+translation = "When eating persimmons,\nThe temple bell rings—\nHoryu-ji Temple."
+romaji = "Kaki kueba\nKane ga naru nari\nHōryū-ji"
+source = "Masaoka Shiki"
+
+[[quote]]
+japanese = "目には青葉\n山ほととぎす\n初鰹"
+translation = "Before my eyes,\nGreen leaves on mountains,\nCuckoo calls, first bonito."
+romaji = "Me ni wa aoba\nYama hototogisu\nHatsugatsuo"
+source = "Yamaguchi Sōdō"
+
+[[quote]]
+japanese = "行く春や\n鳥啼き魚の\n目は泪"
+translation = "Passing spring—\nBirds sing, fish's eyes\nAre filled with tears."
+romaji = "Yuku haru ya\nTori naki uo no\nMe wa namida"
+source = "Matsuo Bashō"
+
+[[quote]]
+japanese = "五月雨や\n色紙へぎたる\n壁の跡"
+translation = "Five months of rain—\nTraces on the wall\nWhere color papers peeled."
+romaji = "Samidare ya\nShikishi hegitaru\nKabe no ato"
+source = "Matsuo Bashō"
+
+[[quote]]
+japanese = "雀の子\nそこのけそこのけ\nお馬が通る"
+translation = "Sparrow's child,\nMove aside, move aside—\nHorse is passing through."
+romaji = "Suzume no ko\nSoko no ke soko no ke\nOuma ga tooru"
+source = "Kobayashi Issa"
+
+[[quote]]
+japanese = "鶯や\n柳のうしろ\n薮の前"
+translation = "Nightingale—\nBehind willow branches,\nIn front of thickets."
+romaji = "Uguisu ya\nYanagi no ushiro\nYabu no mae"
+source = "Matsuo Bashō"
+
+[[quote]]
+japanese = "梅一輪\n一輪ほどの\nあたたかさ"
+translation = "One plum blossom—\nAs warm as one blossom\nCan possibly be."
+romaji = "Ume ichi-ron\nIchiron hodo no\nAtatakasa"
+source = "Takahama Kyoshi"
+
+[[quote]]
+japanese = "万緑の\n中や吾子の歯\n生え初むる"
+translation = "Amidst the verdant green,\nMy child's first teeth\nBegin to emerge."
+romaji = "Banshoku no\nnaka ya wagoko no ha\nhaehajimuru"
+source = "Takahama Kyoshi" 
