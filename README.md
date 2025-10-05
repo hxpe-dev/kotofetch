@@ -125,6 +125,8 @@ source = "Your Name"
 ```
 - These custom quotes automatically merge with the built-in ones.
 
+You can see the built-in quotes in the [quotes folder](quotes/).
+
 ## Usage
 ```bash
 kotofetch                               # display a quote following the config

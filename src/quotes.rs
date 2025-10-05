@@ -4,6 +4,8 @@ pub static BUILTIN_QUOTES: &[(&str, &str)] = &[
     ("anime.toml", include_str!("../quotes/anime.toml")),
     ("proverb.toml", include_str!("../quotes/proverb.toml")),
     ("haiku.toml", include_str!("../quotes/haiku.toml")),
+    ("lyrics.toml", include_str!("../quotes/lyrics.toml")),
+    ("yojijukugo.toml", include_str!("../quotes/yojijukugo.toml")),
 ];
 
 #[derive(Deserialize, Debug, Clone)]
