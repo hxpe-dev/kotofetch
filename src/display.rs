@@ -7,7 +7,11 @@ use rand::prelude::*;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
-use std::{thread, fs, io::{self, Write}};
+use std::{
+    fs,
+    io::{self, Write},
+    thread,
+};
 use term_size;
 use textwrap::wrap;
 use unicode_width::UnicodeWidthStr;
@@ -460,7 +464,8 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
         // Handle Ctrl+C gracefully
         ctrlc::set_handler(move || {
             r.store(false, Ordering::SeqCst);
-        }).expect("Error setting Ctrl-C handler");
+        })
+        .expect("Error setting Ctrl-C handler");
 
         // Hide cursor
         print!("\x1B[?25l");
@@ -476,7 +481,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
             let mut vertical = 0;
             let mut horizontal = 0;
 
-            if runtime.border { 
+            if runtime.border {
                 vertical = runtime.vertical_padding;
                 horizontal = runtime.horizontal_padding;
             }
@@ -484,11 +489,17 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
             // estimate how many lines the box will take (content + borders + padding)
             let content_lines = {
                 let mut count = jap_lines.len();
-                if show_translation { count += 1; }
-                if show_source { count += 1; }
+                if show_translation {
+                    count += 1;
+                }
+                if show_source {
+                    count += 1;
+                }
                 // Add vertical padding and border lines
                 count += vertical * 2;
-                if runtime.border { count += 2; }
+                if runtime.border {
+                    count += 2;
+                }
                 count
             };
 
