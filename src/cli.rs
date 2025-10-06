@@ -67,6 +67,10 @@ pub struct Cli {
     // Center text
     #[arg(long)]
     pub centered: Option<bool>,
+
+    // Dynamic re-centering text
+    #[arg(long)]
+    pub dynamic: Option<bool>,
 }
 
 #[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]

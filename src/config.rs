@@ -33,6 +33,7 @@ pub struct DisplayConfig {
     pub modes: Option<Vec<PathBuf>>,
     pub seed: Option<u64>,
     pub centered: Option<bool>,
+    pub dynamic: Option<bool>,
 }
 
 #[derive(Clone, Debug)]
@@ -52,6 +53,7 @@ pub struct RuntimeConfig {
     pub modes: Vec<PathBuf>,
     pub seed: u64,
     pub centered: bool,
+    pub dynamic: bool,
 }
 
 impl Default for RuntimeConfig {
@@ -74,9 +76,12 @@ impl Default for RuntimeConfig {
                 PathBuf::from("proverb.toml"),
                 PathBuf::from("haiku.toml"),
                 PathBuf::from("anime.toml"),
+                PathBuf::from("lyrics.toml"),
+                PathBuf::from("yojijukugo.toml"),
             ],
             seed: 0, // 0 = random
             centered: true,
+            dynamic: false,
         }
     }
 }
@@ -161,6 +166,9 @@ pub fn make_runtime_config(user: Option<FileConfig>, cli: &crate::cli::Cli) -> R
             if let Some(c) = d.centered {
                 r.centered = c;
             }
+            if let Some(dc) = d.dynamic {
+                r.dynamic = dc;
+            }
         }
     }
 
@@ -215,6 +223,9 @@ pub fn make_runtime_config(user: Option<FileConfig>, cli: &crate::cli::Cli) -> R
     }
     if let Some(c) = cli.centered {
         r.centered = c;
+    }
+    if let Some(dc) = cli.dynamic {
+        r.dynamic = dc;
     }
 
     r

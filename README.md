@@ -78,6 +78,7 @@ Here you can customize:
 - `modes` - list of quote files to use (any `.toml` file in `~/.config/kotofetch/quotes/` or built-in)
 - `seed` - RNG seed for random quotes (`0` for random seed)
 - `centered` - center text (true/false)
+- `dynamic` - dynamic re-centering of the text (true/false)
 
 Example `config.toml`:
 ```toml
@@ -97,6 +98,7 @@ source = true
 modes = ["proverb", "anime"]
 seed = 0
 centered = true
+dynamic = false
 ```
 
 ### Custom quotes
