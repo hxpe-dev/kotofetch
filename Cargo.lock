@@ -232,7 +232,7 @@ checksum = "7943c866cc5cd64cbc25b2e01621d07fa8eb2a1a23160ee81ce38704e97b8ecf"
 
 [[package]]
 name = "kotofetch"
-version = "0.2.17"
+version = "0.2.18"
 dependencies = [
  "clap",
  "console",

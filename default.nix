@@ -2,7 +2,7 @@
 
 pkgs.stdenv.mkDerivation rec {
   pname = "kotofetch";
-  version = "0.2.17";
+  version = "0.2.18";
 
   src = pkgs.fetchurl {
     url = "https://github.com/hxpe-dev/kotofetch/releases/download/v${version}/kotofetch-v${version}-x86_64-unknown-linux-gnu.tar.gz";
