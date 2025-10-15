@@ -6,7 +6,7 @@ pkgs.stdenv.mkDerivation rec {
 
   src = pkgs.fetchurl {
     url = "https://github.com/hxpe-dev/kotofetch/releases/download/v${version}/kotofetch-v${version}-x86_64-unknown-linux-gnu.tar.gz";
-    sha256 = "sha256-4MQw4wN9IYzeMC6l+Jns/TMoDGMEzq/vlqGIxNJpcwU="; # fill in
+    sha256 = "sha256-U0Bwm++/WTU0Lkv1lC518JCHwBIBno/SqSQQiGfbOJk="; # fill in
   };
 
   installPhase = ''
