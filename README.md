@@ -52,6 +52,40 @@ cargo install --path .
 
 After installation, you can run `kotofetch` from anywhere in your terminal.
 
+## Requirements
+
+You need to have a Japanese font installed on your machine.
+
+One popular choice is the **Noto CJK Font**.
+
+#### Install Noto CJK Font on Arch Linux
+```
+sudo pacman -S noto-fonts-cjk
+```
+
+#### Install Noto CJK Font on Ubuntu / Debian
+```
+sudo apt update
+sudo apt install fonts-noto-cjk
+```
+
+#### Install Noto CJK Font on Fedora
+```
+sudo dnf install google-noto-cjk-fonts
+```
+
+#### Install Noto CJK Font on OpenSUSE
+```
+sudo zypper install noto-fonts-cjk
+```
+
+#### Install Noto CJK Font on MacOS (with Homebrew)
+```
+brew tap homebrew/cask-fonts
+brew install --cask font-noto-sans-cjk
+```
+
+
 ## Configuration
 
 ### Config File
