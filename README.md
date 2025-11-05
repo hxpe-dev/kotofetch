@@ -1,8 +1,15 @@
-# kotofetch
+# kotofetch — コトフェッチ
 
-kotofetch is a small, configurable CLI tool that displays Japanese quotes in the terminal. It comes with built-in quotes and allows users to customize display options such as padding, width, translation display, and text styles.
+**kotofetch** is a small, configurable CLI tool that displays Japanese quotes in the terminal. It comes with built-in quotes and allows users to customize display options such as padding, width, translation display, and text styles.
 
 ![image](./images/demo-01.png)
+
+## Content
+- [Installation](#installation)
+- [Requirements](#requirements)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Contributing](#contributing)
 
 ## Installation
 
@@ -171,7 +178,7 @@ kotofetch --modes anime,mycustomquotes  # display quotes from specific files
 ```
 
 ## Contributing
-Contributions are welcome! Here's how you can help:
+Contributions are welcome (donations too, they support me a lot in my work)! Here's how you can help:
 1. **Fork** the repository.
 2. **Clone** your fork locally:
 ```bash
