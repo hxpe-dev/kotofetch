@@ -4,7 +4,7 @@
 
 ![image](./images/demo-01.png)
 
-## Content
+## Contents
 - [Installation](#installation)
 - [Requirements](#requirements)
 - [Configuration](#configuration)
@@ -14,13 +14,11 @@
 ## Installation
 
 ### Arch Linux / AUR
-You can install the stable release from the AUR:
+You can install the stable release from the AUR using any AUR helper:
 
 ```bash
 yay -S kotofetch
 ```
-
-> When prompted, choose All to clean-build the package from the downloaded PKGBUILD.
 
 Or by cloning the AUR from [here](https://aur.archlinux.org/packages/kotofetch):
 ```bash
@@ -86,7 +84,7 @@ sudo dnf install google-noto-cjk-fonts
 sudo zypper install noto-fonts-cjk
 ```
 
-#### Install Noto CJK Font on MacOS (with Homebrew)
+#### Install Noto CJK Font on macOS (with Homebrew)
 ```
 brew tap homebrew/cask-fonts
 brew install --cask font-noto-sans-cjk
