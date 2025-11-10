@@ -249,6 +249,12 @@ romaji = "Kyō mo ichinichi ganbaru zoi!"
 source = "New Game! (Suzukaze Aoba), anime ep. 4 / manga vol. 1"
 
 [[quote]]
+japanese = "勉強はスポーツと違って、やれば誰でもできるようになるんだよ。できないのは、ただやってないだけ。"
+translation = "Academics aren’t like sports – anyone can pick this stuff up if they try. If you still can’t do it, you’re probably just not putting in the work."
+romaji = "Benkyō wa supōtsu to chigatte, yareba dare demo dekiru yō ni narun da yo. Dekinai no wa, tada yattenai dake."
+source = "A Place Further Than the Universe (Hinata Miyake, Episode 4)"
+
+[[quote]]
 japanese = "自分のためにも、本当の気持ちはちゃんと言わなきゃ。"
 translation = "You need to say how you truly feel for your own sake."
 romaji = "Jibun no tame ni mo, hontō no kimochi wa chanto iwanakya."
@@ -259,3 +265,4 @@ japanese = "戻れるうちは、それは旅じゃない。戻れなくなっ�
 translation = "If you can still turn back, it’s not really a journey. When you hit the point of no return, that’s the moment it becomes a journey."
 romaji = "Modoreru uchi wa, sore wa tabi janai. Modorenaku natta toki, hajimete sore wa tabi ni naru no."
 source = "A Place Further Than the Universe (Hinata Miyake, Episode 2)"
+
