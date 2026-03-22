@@ -147,3 +147,22 @@ japanese = "ゆっくりしていってね!!!"
 translation = "Take it easy~!!!"
 romaji = "Yukkuri shite itte ne!!!"
 source = "Yukkuri Marisa & Yukkuri Reimu"
+
+# growth and resilience
+[[quote]]
+japanese = "継続は力なり"
+translation = "Continuity is power—Perseverance is the key to success."
+romaji = "Keizoku wa chikara nari"
+source = "Japanese proverb"
+
+[[quote]]
+japanese = "失敗は成功の基"
+translation = "Failure is the foundation of success."
+romaji = "Shippai wa seikō no moto"
+source = "Japanese proverb"
+
+[[quote]]
+japanese = "習うより慣れろ"
+translation = "Learn by doing—Practice over theory."
+romaji = "Narau yori narero"
+source = "Japanese proverb"
