@@ -159,10 +159,29 @@ source = "Japanese proverb"
 japanese = "良薬は口に苦し"
 translation = "Good medicine tastes bitter—The best advice is often hard to hear."
 romaji = "Ryōyaku wa kuchi ni nigashi"
-source = "Confucius (adopted in JP)"
+source = "Chinese proverb (adopted in JP)"
 
 [[quote]]
 japanese = "知らぬが仏"
 translation = "Not knowing is Buddha—Ignorance is bliss."
 romaji = "Shiranu ga hotoke"
+source = "Japanese proverb"
+
+# growth and resilience
+[[quote]]
+japanese = "継続は力なり"
+translation = "Continuity is power—Perseverance is the key to success."
+romaji = "Keizoku wa chikara nari"
+source = "Japanese proverb"
+
+[[quote]]
+japanese = "失敗は成功の基"
+translation = "Failure is the foundation of success."
+romaji = "Shippai wa seikō no moto"
+source = "Japanese proverb"
+
+[[quote]]
+japanese = "習うより慣れろ"
+translation = "Learn by doing—Practice over theory."
+romaji = "Narau yori narero"
 source = "Japanese proverb"
