@@ -14,6 +14,10 @@
 
 ## Installation
 
+> [!NOTE]
+> The latest release does not contain all the built-in quotes.  
+> If you want all the built-in quotes, please add them manually by checking the [quotes](quotes) folder.
+
 ### Arch Linux / AUR
 You can install the stable release from the AUR using any AUR helper:
 
