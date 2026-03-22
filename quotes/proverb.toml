@@ -147,3 +147,22 @@ japanese = "ゆっくりしていってね!!!"
 translation = "Take it easy~!!!"
 romaji = "Yukkuri shite itte ne!!!"
 source = "Yukkuri Marisa & Yukkuri Reimu"
+
+# Reality
+[[quote]]
+japanese = "案ずるより産むが易し"
+translation = "Giving birth is easier than worrying about it—Action is simpler than anxiety."
+romaji = "Anzuru yori umu ga yasushi"
+source = "Japanese proverb"
+
+[[quote]]
+japanese = "良薬は口に苦し"
+translation = "Good medicine tastes bitter—The best advice is often hard to hear."
+romaji = "Ryōyaku wa kuchi ni nigashi"
+source = "Confucius (adopted in JP)"
+
+[[quote]]
+japanese = "知らぬが仏"
+translation = "Not knowing is Buddha—Ignorance is bliss."
+romaji = "Shiranu ga hotoke"
+source = "Japanese proverb"
