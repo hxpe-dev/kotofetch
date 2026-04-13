@@ -1,11 +1,11 @@
 use crate::config::RuntimeConfig;
-use crate::quotes::BUILTIN_QUOTES;
 use crate::quotes::Quote;
 use crate::quotes::QuotesFile;
+use crate::quotes::BUILTIN_QUOTES;
 use console::{Color, Style};
 use rand::prelude::*;
-use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
 use std::time::Duration;
 use std::{
     fs,
@@ -14,6 +14,7 @@ use std::{
 };
 use term_size;
 use textwrap::wrap;
+use unicode_width::UnicodeWidthChar;
 use unicode_width::UnicodeWidthStr;
 
 fn simulate_font_size(s: &str, size: &str) -> String {
@@ -45,6 +46,54 @@ fn simulate_font_size(s: &str, size: &str) -> String {
             .to_string(),
         _ => s.to_string(),
     }
+}
+
+fn format_furigana(
+    japanese: &str,
+    furigana: &str,
+    _furigana_style: &Style,
+    _quote_color_style: &Style,
+) -> (String, String) {
+    let chars: Vec<char> = japanese.chars().collect();
+    let readings: Vec<&str> = furigana.split_whitespace().collect();
+
+    if readings.is_empty() {
+        return (japanese.to_string(), String::new());
+    }
+
+    let mut kanji_line = String::new();
+    let mut furigana_line = String::new();
+    let mut reading_idx = 0;
+
+    for c in chars {
+        if is_kanji(c) {
+            if reading_idx < readings.len() {
+                kanji_line.push(c);
+                let reading = readings[reading_idx];
+                let char_width = c.width().unwrap_or(1);
+                let reading_width = reading.width();
+                let spaces = " ".repeat(char_width.saturating_sub(reading_width));
+                furigana_line.push_str(&format!("{}{}", spaces, reading));
+                reading_idx += 1;
+            } else {
+                kanji_line.push(c);
+                let char_width = c.width().unwrap_or(1);
+                furigana_line.push_str(&" ".repeat(char_width));
+            }
+        } else {
+            kanji_line.push(c);
+            furigana_line.push(' ');
+        }
+    }
+
+    (
+        kanji_line.trim_end().to_string(),
+        furigana_line.trim_end().to_string(),
+    )
+}
+
+fn is_kanji(c: char) -> bool {
+    matches!(c, '\u{4E00}'..='\u{9FFF}' | '\u{3400}'..='\u{4DBF}' | '\u{20000}'..='\u{2A6DF}')
 }
 
 fn rgb_to_ansi256(r: u8, g: u8, b: u8) -> u8 {
@@ -197,6 +246,7 @@ fn print_boxed(
     show_source: bool,
     source_style: Style,
     centered: bool,
+    furigana_lines: Vec<String>,
 ) {
     // Compute max natural width of content
     let mut max_width = 0;
@@ -270,6 +320,28 @@ fn print_boxed(
         centered,
         &border_color,
     );
+
+    // Furigana (readings below kanji)
+    if !furigana_lines.is_empty() {
+        println!(
+            "{}",
+            pad_to_center(
+                &blank_line(inner_width, horizontal_padding, border, &border_color),
+                box_width,
+                centered
+            )
+        );
+        print_block(
+            &furigana_lines,
+            translation_style.clone(),
+            inner_width,
+            horizontal_padding,
+            border,
+            box_width,
+            centered,
+            &border_color,
+        );
+    }
 
     // Translation
     if show_translation {
@@ -422,6 +494,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
             translation: None,
             romaji: None,
             source: None,
+            furigana: None,
         });
     }
 
@@ -435,7 +508,6 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
 
     // render
     let jap = simulate_font_size(&quote.japanese, &runtime.font_size);
-    let jap_lines: Vec<String> = jap.lines().map(|s| s.to_string()).collect();
     let translation_style = color_from_hex(&runtime.translation_color);
     let show_source = runtime.source && quote.source.is_some();
     let source_style = Style::new().dim();
@@ -446,6 +518,18 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
             (quote.translation.as_deref(), quote.translation.is_some())
         }
         crate::config::TranslationMode::Romaji => (quote.romaji.as_deref(), quote.romaji.is_some()),
+        crate::config::TranslationMode::Furigana => (None, false),
+    };
+
+    let show_furigana = matches!(
+        runtime.show_translation,
+        crate::config::TranslationMode::Furigana
+    ) && quote.furigana.is_some();
+    let furigana = quote.furigana.as_deref();
+    let furigana_style = if runtime.bold {
+        color_from_hex(&runtime.translation_color).bold()
+    } else {
+        color_from_hex(&runtime.translation_color)
     };
 
     let jap_style = if runtime.bold {
@@ -455,6 +539,21 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
     };
 
     let border_color = color_from_hex(&runtime.border_color);
+
+    let (jap_lines, furigana_lines): (Vec<String>, Vec<String>) = if show_furigana {
+        if let Some(f) = furigana {
+            let (kanji, reading) = format_furigana(&jap, f, &furigana_style, &jap_style);
+            let kanji_lines: Vec<String> = kanji.lines().map(|s| s.to_string()).collect();
+            let reading_lines: Vec<String> = reading.lines().map(|s| s.to_string()).collect();
+            (kanji_lines, reading_lines)
+        } else {
+            let lines: Vec<String> = jap.lines().map(|s| s.to_string()).collect();
+            (lines, vec![])
+        }
+    } else {
+        let lines: Vec<String> = jap.lines().map(|s| s.to_string()).collect();
+        (lines, vec![])
+    };
 
     if runtime.dynamic {
         // Dynamic recentering mode
@@ -489,6 +588,9 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
             // estimate how many lines the box will take (content + borders + padding)
             let content_lines = {
                 let mut count = jap_lines.len();
+                if !furigana_lines.is_empty() {
+                    count += furigana_lines.len() + 1; // +1 for blank line between
+                }
                 if show_translation {
                     count += 1;
                 }
@@ -532,6 +634,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
                 show_source,
                 source_style.clone(),
                 runtime.centered,
+                furigana_lines.clone(),
             );
 
             io::stdout().flush().unwrap();
@@ -569,6 +672,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
             show_source,
             source_style,
             runtime.centered,
+            furigana_lines,
         );
     }
 }

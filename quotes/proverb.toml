@@ -3,185 +3,207 @@ japanese = "七転び八起き"
 translation = "Fall down seven times, stand up eight."
 romaji = "Nanakorobi yaoki"
 source = "Japanese proverb"
+furigana = "ななこ ろび や 起"
 
 [[quote]]
 japanese = "一期一会"
 translation = "Once in a lifetime encounter."
 romaji = "Ichigo ichie"
 source = "Japanese proverb"
+furigana = "いっ き いち え"
 
 [[quote]]
 japanese = "猿も木から落ちる"
 translation = "Even monkeys fall from trees."
 romaji = "Saru mo ki kara ochiru"
 source = "Japanese proverb"
+furigana = "さる も き お"
 
 [[quote]]
 japanese = "雨降って地固まる"
 translation = "After the rain, the ground hardens."
 romaji = "Ame futte ji katamaru"
 source = "Japanese proverb"
+furigana = "あめ ふ つ じた ま"
 
 [[quote]]
 japanese = "石の上にも三年"
 translation = "Three years on a stone—perseverance pays off."
 romaji = "Ishi no ue ni mo sannen"
 source = "Japanese proverb"
+furigana = "いし うえ み ねん"
 
 [[quote]]
 japanese = "花より団子"
 translation = "Dumplings over flowers—practicality over aesthetics."
 romaji = "Hana yori dango"
 source = "Japanese proverb"
+furigana = "はな より だんご"
 
 [[quote]]
 japanese = "二兎を追う者は一兎をも得ず"
 translation = "Chase two rabbits, catch none."
 romaji = "Nito o ou mono wa itto o mo ezu"
 source = "Japanese proverb"
+furigana = "に と お もの ひ と え"
 
 [[quote]]
 japanese = "猫に小判"
 translation = "Gold coins to a cat—wasting something on someone who can't value it."
 romaji = "Neko ni koban"
 source = "Japanese proverb"
+furigana = "ねこ こ ばん"
 
 [[quote]]
 japanese = "馬の耳に念仏"
-translation = "Buddhist prayers in a horse’s ear—preaching to deaf ears."
+translation = "Buddhist prayers in a horse's ear—preaching to deaf ears."
 romaji = "Uma no mimi ni nenbutsu"
 source = "Japanese proverb"
+furigana = "うま みみ ねん ぶつ"
 
-# 10
 [[quote]]
 japanese = "虎穴に入らずんば虎子を得ず"
-translation = "You cannot get a tiger cub without entering the tiger’s cave."
+translation = "You cannot get a tiger cub without entering the tiger's cave."
 romaji = "Koketsu ni irazunba koji o ezu"
 source = "Japanese proverb"
+furigana = "こ けつ いら こじ え"
 
 [[quote]]
 japanese = "口は災いの元"
 translation = "The mouth is the source of misfortune."
 romaji = "Kuchi wa wazawai no moto"
 source = "Japanese proverb"
+furigana = "くち わざわ もの と"
 
 [[quote]]
 japanese = "井の中の蛙大海を知らず"
 translation = "A frog in a well does not know the ocean."
 romaji = "I no naka no kawazu taikai o shirazu"
 source = "Japanese proverb"
+furigana = "い なか かわず たいかい し"
 
 [[quote]]
 japanese = "魚心あれば水心"
 translation = "If the fish is willing, so is the water—mutual feelings matter."
 romaji = "Uo gokoro areba mizu gokoro"
 source = "Japanese proverb"
+furigana = "うお こ ろ みず こ ろ"
 
 [[quote]]
 japanese = "覆水盆に返らず"
-translation = "Spilt water will not return to the tray—what’s done is done."
+translation = "Spilt water will not return to the tray—what's done is done."
 romaji = "Fukusui bon ni kaerazu"
 source = "Japanese proverb"
+furigana = "ふくすい ぼん かえ"
 
 [[quote]]
-japanese = "師の道は苦しみだ"
+japanese = "朱の道は苦しみだ"
 translation = "The way of the master is pain."
 romaji = "Shi no michi wa kurushimi da"
 source = "Japanese proverb"
+furigana = "し みち くるし"
 
-# orig latin, commonly adopted in jp
 [[quote]]
 japanese = "類は友を呼ぶ"
 translation = "Simile simili gaudet—birds of a feather flock together."
 romaji = "Rui wa tomo o yobu"
 source = "Adopted proverb"
+furigana = "るい とも よ"
 
 [[quote]]
 japanese = "阿吽の呼吸"
 translation = "Wordless synchronicity."
 romaji = "Aun no kokyū"
 source = "Japanese proverb"
+furigana = "あ うん こ きゅう"
 
 [[quote]]
 japanese = "急がば回れ"
 translation = "In a hurry, go the long way around."
 romaji = "Isogeba maware"
 source = "Japanese proverb"
+furigana = "いそ が ば まわれ"
 
-# orig en, commonly adopted in jp
 [[quote]]
 japanese = "転石苔を生ぜず"
 translation = "A rolling stone gathers no moss."
 romaji = "Tenseki koke o shōsezu"
 source = "Adopted proverb"
+furigana = "てん せき こけ しょう"
 
-# 20
 [[quote]]
 japanese = "鳶が鷹を生む"
 translation = "A kite gives birth to a hawk."
 romaji = "Tobi ga taka o umu"
 source = "Japanese proverb"
+furigana = "とび たか う"
 
 [[quote]]
 japanese = "壁に耳あり障子に目あり"
 translation = "Walls have ears, screens have eyes."
 romaji = "Kabe ni mimi ari shōji ni me ari"
-source = "Japanese proverb" 
+source = "Japanese proverb"
+furigana = "かべ みみ あり しょうじ め"
 
-# I am not sure how to concisely translate this one. It is originally cautionary, however these days it is used oppositely. I really like the phrase
 [[quote]]
 japanese = "犬も歩けば棒に当たる"
 translation = "A walking dog may get hit by a stick—Nothing ventured, nothing gained."
 romaji = "Inu mo arukeba bō ni ataru"
 source = "Japanese proverb"
+furigana = "いぬ ある ぼう あ"
 
-# internet culture
 [[quote]]
-japanese = "昨日は歴史、明日は未知、しかし今日は贈り物。だから「プレゼント」と呼ばれるのです。"
+japanese = "昨日は歴史、明日は未知、しかし今日は贈り物。だから「プレゼント」と呼ばねるのです。"
 translation = "Yesterday is history, Tomorrow is a mystery, but Today is a gift. That is why it is called the present."
 romaji = "Kinō wa rekishi, ashita wa michi, shikashi kyō wa okurimono. Dakara 'purezento' to yobareru no desu."
 source = "Master Oogway"
+furigana = "きのう れきし あした みち きょう おく もの"
 
 [[quote]]
 japanese = "ゆっくりしていってね!!!"
 translation = "Take it easy~!!!"
 romaji = "Yukkuri shite itte ne!!!"
 source = "Yukkuri Marisa & Yukkuri Reimu"
+furigana = "ゆっくり"
 
-# Reality
 [[quote]]
 japanese = "案ずるより産むが易し"
 translation = "Giving birth is easier than worrying about it—Action is simpler than anxiety."
 romaji = "Anzuru yori umu ga yasushi"
 source = "Japanese proverb"
+furigana = "あんず う やす"
 
 [[quote]]
 japanese = "良薬は口に苦し"
 translation = "Good medicine tastes bitter—The best advice is often hard to hear."
 romaji = "Ryōyaku wa kuchi ni nigashi"
 source = "Chinese proverb (adopted in JP)"
+furigana = "りょう やく くち にが"
 
 [[quote]]
 japanese = "知らぬが仏"
 translation = "Not knowing is Buddha—Ignorance is bliss."
 romaji = "Shiranu ga hotoke"
 source = "Japanese proverb"
+furigana = "しら 仏とけ"
 
-# growth and resilience
 [[quote]]
 japanese = "継続は力なり"
 translation = "Continuity is power—Perseverance is the key to success."
 romaji = "Keizoku wa chikara nari"
 source = "Japanese proverb"
+furigana = "けいぞく ちから"
 
 [[quote]]
 japanese = "失敗は成功の基"
 translation = "Failure is the foundation of success."
 romaji = "Shippai wa seikō no moto"
 source = "Japanese proverb"
+furigana = "しっぱい せいこう もと"
 
 [[quote]]
 japanese = "習うより慣れろ"
 translation = "Learn by doing—Practice over theory."
 romaji = "Narau yori narero"
 source = "Japanese proverb"
+furigana = "なら なれ"

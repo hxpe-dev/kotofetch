@@ -78,4 +78,5 @@ pub enum TranslationMode {
     None,
     English,
     Romaji,
+    Furigana,
 }

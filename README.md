@@ -110,7 +110,7 @@ User configuration lives in:
 Here you can customize:
 - `horizontal_padding` / `vertical_padding` - spacing around quotes
 - `width` - max width for text wrapping (`0` for automatic width)
-- `show_translation` - translation mode (`"none"`, `"english"`, `"romaji"`)
+- `show_translation` - translation mode (`"none"`, `"english"`, `"romaji"`, `"furigana"`)
 - `quote_color` - named ANSI colors (`"red"`, `"yellow"`, `"dim"`, etc.) or hex (`"#ffcc00"`)
 - `translation_color` - named ANSI colors (`"red"`, `"yellow"`, `"dim"`, etc.) or hex (`"#ffcc00"`)
 - `border_color` - named ANSI colors (`"red"`, `"yellow"`, `"dim"`, etc.) or hex (`"#ffcc00"`)
@@ -130,7 +130,7 @@ Example `config.toml`:
 horizontal_padding = 3
 vertical_padding = 1
 width = 50
-show_translation = "romaji"
+show_translation = "furigana"
 quote_color = "#a3be8c"
 translation_color = "dim"
 border_color = "#be8ca3"
@@ -162,13 +162,17 @@ japanese = "逃げちゃダメだ"
 translation = "You mustn't run away."
 romaji = "Nigeccha dame da"
 source = "Neon Genesis Evangelion"
+furigana = "にげ"
 
 [[quote]]
 japanese = "人は心で生きるんだ"
 translation = "People live by their hearts."
 romaji = "Hito wa kokoro de ikiru nda"
 source = "Your Name"
+furigana = "ひと ここ いき"
 ```
+
+> **Note:** The `furigana` field contains space-separated readings corresponding to each kanji character. Each reading should match one kanji in order. Readings for non-kanji characters should be omitted. For example, `"逃げる"` (to run away) with furigana `"にげ"` provides reading for `逃`.
 - These custom quotes automatically merge with the built-in ones.
 
 You can see the built-in quotes in the [quotes folder](quotes/).
@@ -176,9 +180,28 @@ You can see the built-in quotes in the [quotes folder](quotes/).
 ## Usage
 ```bash
 kotofetch                               # display a quote following the config
+kotofetch --translation furigana        # display furigana readings below kanji
 kotofetch --horizontal-padding 3        # override specific config parameter temporarily
 kotofetch --modes anime,mycustomquotes  # display quotes from specific files
 ```
+
+### Translation Modes
+
+| Mode | Description |
+|:-----|:------------|
+| `none` | Japanese text only |
+| `english` | Shows English translation below Japanese |
+| `romaji` | Shows romaji (romanized Japanese) below Japanese |
+| `furigana` | Shows furigana readings below kanji (if available) |
+
+**Furigana Example:**
+```
+井 の 中 の 蛙 大 海 を 知 ら ず
+ い   なか   かわず たいかい    し 
+ — 井の中の蛙大海を知らず
+```
+
+Furigana displays the reading for each kanji character, properly aligned underneath. Not all quotes have furigana available—only those that include the `furigana` field in their definition.
 
 ## Contributing
 Contributions are welcome (donations too, they support me a lot in my work)! Here's how you can help:

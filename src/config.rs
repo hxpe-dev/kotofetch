@@ -14,6 +14,7 @@ pub enum TranslationMode {
     None,
     English,
     Romaji,
+    Furigana,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -189,6 +190,7 @@ pub fn make_runtime_config(user: Option<FileConfig>, cli: &crate::cli::Cli) -> R
             crate::cli::TranslationMode::None => TranslationMode::None,
             crate::cli::TranslationMode::English => TranslationMode::English,
             crate::cli::TranslationMode::Romaji => TranslationMode::Romaji,
+            crate::cli::TranslationMode::Furigana => TranslationMode::Furigana,
         };
     }
 
