@@ -48,12 +48,7 @@ fn simulate_font_size(s: &str, size: &str) -> String {
     }
 }
 
-fn format_furigana(
-    japanese: &str,
-    furigana: &str,
-    _furigana_style: &Style,
-    _quote_color_style: &Style,
-) -> (String, String) {
+fn format_furigana(japanese: &str, furigana: &str) -> (String, String) {
     let chars: Vec<char> = japanese.chars().collect();
     let readings: Vec<&str> = furigana.split_whitespace().collect();
 
@@ -67,22 +62,30 @@ fn format_furigana(
 
     for c in chars {
         if is_kanji(c) {
+            let char_width = c.width().unwrap_or(2);
             if reading_idx < readings.len() {
-                kanji_line.push(c);
                 let reading = readings[reading_idx];
-                let char_width = c.width().unwrap_or(1);
                 let reading_width = reading.width();
-                let spaces = " ".repeat(char_width.saturating_sub(reading_width));
-                furigana_line.push_str(&format!("{}{}", spaces, reading));
+                let col_width = char_width.max(reading_width);
+                let kanji_left = (col_width - char_width) / 2;
+                let kanji_right = col_width - char_width - kanji_left;
+                let reading_left = (col_width - reading_width) / 2;
+                let reading_right = col_width - reading_width - reading_left;
+                kanji_line.push_str(&" ".repeat(kanji_left));
+                kanji_line.push(c);
+                kanji_line.push_str(&" ".repeat(kanji_right));
+                furigana_line.push_str(&" ".repeat(reading_left));
+                furigana_line.push_str(reading);
+                furigana_line.push_str(&" ".repeat(reading_right));
                 reading_idx += 1;
             } else {
                 kanji_line.push(c);
-                let char_width = c.width().unwrap_or(1);
                 furigana_line.push_str(&" ".repeat(char_width));
             }
         } else {
+            let char_width = c.width().unwrap_or(1);
             kanji_line.push(c);
-            furigana_line.push(' ');
+            furigana_line.push_str(&" ".repeat(char_width));
         }
     }
 
@@ -263,6 +266,9 @@ fn print_boxed(
             max_width = max_width.max(UnicodeWidthStr::width(s));
         }
     }
+    for line in &furigana_lines {
+        max_width = max_width.max(UnicodeWidthStr::width(line.as_str()));
+    }
 
     // Respect user specified width, width <= 0 means automatic
     let mut inner_width = if width > 0 { width } else { max_width };
@@ -322,6 +328,10 @@ fn print_boxed(
     );
 
     // Furigana (readings below kanji)
+    // Cannot go through print_block: wrap() strips trailing spaces, then align_in_box()
+    // re-centers the shorter furigana string independently, shifting readings away from
+    // their kanji. Instead we compute the same left-margin the kanji line received and
+    // pre-apply it so that each reading lands directly under its kanji.
     if !furigana_lines.is_empty() {
         println!(
             "{}",
@@ -331,16 +341,42 @@ fn print_boxed(
                 centered
             )
         );
-        print_block(
-            &furigana_lines,
-            translation_style.clone(),
-            inner_width,
-            horizontal_padding,
-            border,
-            box_width,
-            centered,
-            &border_color,
-        );
+        for (idx, furi_line) in furigana_lines.iter().enumerate() {
+            let kanji_w = text_lines
+                .get(idx)
+                .map(|l| UnicodeWidthStr::width(l.trim_end()))
+                .unwrap_or(0);
+            let left_pad = if centered && kanji_w < inner_width {
+                (inner_width - kanji_w) / 2
+            } else {
+                0
+            };
+            let furi_w = UnicodeWidthStr::width(furi_line.as_str());
+            let right_pad = inner_width.saturating_sub(left_pad + furi_w);
+            let content = format!(
+                "{}{}{}",
+                " ".repeat(left_pad),
+                furi_line,
+                " ".repeat(right_pad)
+            );
+            let line = if border {
+                format!(
+                    "{}{}{}{}{}",
+                    border_color.apply_to("│"),
+                    " ".repeat(horizontal_padding),
+                    translation_style.apply_to(&content),
+                    " ".repeat(horizontal_padding),
+                    border_color.apply_to("│")
+                )
+            } else {
+                format!(
+                    "{}{}",
+                    " ".repeat(horizontal_padding),
+                    translation_style.apply_to(&content)
+                )
+            };
+            println!("{}", pad_to_center(&line, box_width, centered));
+        }
     }
 
     // Translation
@@ -437,10 +473,10 @@ fn clear_screen() {
 
 pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
     // seed
-    let seed = if cli.seed.unwrap_or(0) == 0 {
+    let seed = if runtime.seed == 0 {
         rand::random::<u64>()
     } else {
-        cli.seed.unwrap_or(runtime.seed)
+        runtime.seed
     };
     let mut rng = StdRng::seed_from_u64(seed);
 
@@ -474,7 +510,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
         let file_str = file_name.to_str().unwrap_or_default();
         if let Some((_, content)) = BUILTIN_QUOTES
             .iter()
-            .find(|&&(name, _)| name == file_name.to_str().unwrap())
+            .find(|&&(name, _)| name == file_str)
         {
             match toml::from_str::<QuotesFile>(content) {
                 Ok(parsed) => pool.extend(parsed.quotes),
@@ -526,11 +562,6 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
         crate::config::TranslationMode::Furigana
     ) && quote.furigana.is_some();
     let furigana = quote.furigana.as_deref();
-    let furigana_style = if runtime.bold {
-        color_from_hex(&runtime.translation_color).bold()
-    } else {
-        color_from_hex(&runtime.translation_color)
-    };
 
     let jap_style = if runtime.bold {
         color_from_hex(&runtime.quote_color).bold()
@@ -542,7 +573,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
 
     let (jap_lines, furigana_lines): (Vec<String>, Vec<String>) = if show_furigana {
         if let Some(f) = furigana {
-            let (kanji, reading) = format_furigana(&jap, f, &furigana_style, &jap_style);
+            let (kanji, reading) = format_furigana(&jap, f);
             let kanji_lines: Vec<String> = kanji.lines().map(|s| s.to_string()).collect();
             let reading_lines: Vec<String> = reading.lines().map(|s| s.to_string()).collect();
             (kanji_lines, reading_lines)

@@ -159,7 +159,7 @@ pub fn make_runtime_config(user: Option<FileConfig>, cli: &crate::cli::Cli) -> R
                 r.source = b;
             }
             if let Some(m) = d.modes {
-                r.modes = m.into_iter().map(|s| PathBuf::from(s)).collect();
+                r.modes = m;
             }
             if let Some(s) = d.seed {
                 r.seed = s;
