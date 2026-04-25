@@ -10,6 +10,7 @@
 - [Requirements](#requirements)
 - [Configuration](#configuration)
 - [Usage](#usage)
+- [Importing Anki decks](#importing-anki-decks)
 - [Contributing](#contributing)
 
 ## Installation
@@ -145,6 +146,37 @@ centered = true
 dynamic = false
 ```
 
+### Importing Anki decks
+
+You can import your Anki decks as kotofetch quote files using the **AnkiConnect** plugin.
+
+**Requirements:**
+1. Anki desktop must be running.
+2. AnkiConnect must be installed (plugin code: `2055492159`).
+
+**Interactive import:**
+```bash
+kotofetch init anki
+```
+This connects to `http://localhost:8765`, shows your available decks, and walks you through mapping note fields (japanese text, translation, furigana reading) interactively.
+
+**Non-interactive import (for scripting):**
+```bash
+kotofetch init anki \
+  --deck "Core 2k" \
+  --japanese-field Expression \
+  --translation-field Meaning \
+  --furigana-field Reading \
+  --yes
+```
+
+Each imported deck is saved as `~/.config/kotofetch/quotes/<deck-name>.toml`. After importing, use it with:
+```bash
+kotofetch --modes core-2k
+```
+
+**Furigana support:** if your note's japanese field contains Anki's native furigana syntax (`食[た]べる`), it is automatically converted to kotofetch's inline format (`食(た)べる`). If the japanese field has no readings, the furigana field is used as a fallback. HTML ruby tags (`<ruby>/<rt>`) are also converted.
+
 ### Custom quotes
 Built-in quotes are embedded in the binary. To add your own quotes, create:
 ```bash
@@ -191,13 +223,6 @@ kotofetch --modes anime,mycustomquotes  # display quotes from specific files
 | `english` | Shows English translation below Japanese |
 | `romaji` | Shows romaji (romanized Japanese) below Japanese |
 | `furigana` | Shows furigana readings below kanji (if available) |
-
-**Furigana Example:**
-```
-井の中の蛙大海を知らず
-い   なか  かわず たいかい   し
- — 井の中の蛙大海を知らず
-```
 
 Furigana displays readings centered below their kanji, supporting both single-kanji annotations (`知(し)`) and compound words (`大海(たいかい)`). Only quotes that include inline ruby markup in their `japanese` field will show furigana readings.
 

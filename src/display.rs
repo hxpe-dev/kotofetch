@@ -77,7 +77,7 @@ fn parse_ruby(s: &str) -> Vec<Segment> {
                     break;
                 }
                 if rc == '\n' {
-                    // Newline terminates an unclosed paren — treat as plain
+                    // Newline terminates an unclosed paren - treat as plain
                     reading.push(rc);
                     break;
                 }
@@ -493,7 +493,7 @@ fn print_boxed(
                 .enumerate()
                 .map(|(i, wline)| {
                     if i == 0 {
-                        format!("— {}", wline)
+                        format!("- {}", wline)
                     } else {
                         format!("  {}", wline)
                     }
