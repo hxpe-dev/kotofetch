@@ -30,8 +30,9 @@ impl AnkiClient {
         let response = ureq::post(&self.url)
             .send_json(body)
             .map_err(|e| format!("Could not reach AnkiConnect at {}: {e}", self.url))?;
-        let json: Value = response
-            .into_json()
+        let mut resp_body = response.into_body();
+        let json: Value = resp_body
+            .read_json()
             .map_err(|e| format!("Failed to parse AnkiConnect response: {e}"))?;
 
         if let Some(err) = json["error"].as_str().filter(|s| !s.is_empty()) {
@@ -352,6 +353,7 @@ const JP_HINTS: &[&str] = &[
 ];
 const TL_HINTS: &[&str] = &["Meaning", "Translation", "English", "Definition", "Back"];
 const FU_HINTS: &[&str] = &["Reading", "Furigana"];
+const RO_HINTS: &[&str] = &["Romaji", "Romanization", "Romaji Reading"];
 const SRC_HINTS: &[&str] = &["Source", "Notes", "Deck"];
 
 fn guess_field(fields: &[String], hints: &[&str]) -> Option<String> {
@@ -413,13 +415,37 @@ struct FieldMapping {
     japanese: String,
     translation: Option<String>,
     furigana: Option<String>,
+    romaji: Option<String>,
     source: Option<String>,
     deck_name: String,
 }
 
+fn print_sample(samples: &[AnkiNote], idx: usize, deck: &str) {
+    let sample = &samples[idx];
+    let field_names = &sample.field_order;
+    println!(
+        "\nDeck \"{}\" - sample note ({}/{}):",
+        deck,
+        idx + 1,
+        samples.len()
+    );
+    for name in field_names {
+        let raw = sample.fields.get(name).map(|s| s.as_str()).unwrap_or("");
+        let clean = clean_field(raw);
+        let preview: String = clean.chars().take(40).collect();
+        let preview = if clean.len() > preview.len() {
+            format!("{}...", preview)
+        } else {
+            preview
+        };
+        println!("  {:<22} - {}", name, preview);
+    }
+    println!();
+}
+
 fn get_field_mapping(
     field_names: &[String],
-    sample: &AnkiNote,
+    samples: &[AnkiNote],
     deck: &str,
     args: &AnkiArgs,
 ) -> Result<FieldMapping> {
@@ -435,6 +461,10 @@ fn get_field_mapping(
         .furigana_field
         .clone()
         .or_else(|| guess_field(field_names, FU_HINTS));
+    let ro_hint = args
+        .romaji_field
+        .clone()
+        .or_else(|| guess_field(field_names, RO_HINTS));
     let src_hint = args
         .source_field
         .clone()
@@ -447,35 +477,40 @@ fn get_field_mapping(
             japanese,
             translation: tl_hint,
             furigana: fu_hint,
+            romaji: ro_hint,
             source: src_hint,
             deck_name: deck.to_string(),
         });
     }
 
-    // Show sample note fields
-    println!("\nDeck \"{}\" - sample note fields:", deck);
-    for name in field_names {
-        let raw = sample.fields.get(name).map(|s| s.as_str()).unwrap_or("");
-        let clean = clean_field(raw);
-        let preview: String = clean.chars().take(40).collect();
-        let preview = if clean.len() > preview.len() {
-            format!("{}…", preview)
-        } else {
-            preview
-        };
-        println!("  {:<22} - {}", name, preview);
+    // Show sample note, let user cycle through samples if needed
+    let mut idx = 0;
+    loop {
+        print_sample(samples, idx, deck);
+        if samples.len() > 1 {
+            let input = prompt(
+                "Press Enter to map fields, or type 'next' for another sample",
+                "",
+            );
+            if input.trim().eq_ignore_ascii_case("next") {
+                idx = (idx + 1) % samples.len();
+                continue;
+            }
+        }
+        break;
     }
-    println!();
 
     let japanese = prompt_field("japanese", field_names, jp_hint.as_deref(), true)?.unwrap();
     let translation = prompt_field("translation", field_names, tl_hint.as_deref(), false)?;
     let furigana = prompt_field("furigana", field_names, fu_hint.as_deref(), false)?;
+    let romaji = prompt_field("romaji", field_names, ro_hint.as_deref(), false)?;
     let source = prompt_field("source", field_names, src_hint.as_deref(), false)?;
 
     Ok(FieldMapping {
         japanese,
         translation,
         furigana,
+        romaji,
         source,
         deck_name: deck.to_string(),
     })
@@ -486,6 +521,7 @@ fn get_field_mapping(
 struct ImportedQuote {
     japanese: String,
     translation: Option<String>,
+    romaji: Option<String>,
     source: Option<String>,
 }
 
@@ -518,6 +554,13 @@ fn convert_note(note: &AnkiNote, mapping: &FieldMapping) -> Option<ImportedQuote
         .map(|v| clean_field(v))
         .filter(|s| !s.is_empty());
 
+    let romaji = mapping
+        .romaji
+        .as_ref()
+        .and_then(|f| note.fields.get(f))
+        .map(|v| clean_field(v))
+        .filter(|s| !s.is_empty());
+
     let source = mapping
         .source
         .as_ref()
@@ -529,6 +572,7 @@ fn convert_note(note: &AnkiNote, mapping: &FieldMapping) -> Option<ImportedQuote
     Some(ImportedQuote {
         japanese,
         translation,
+        romaji,
         source,
     })
 }
@@ -550,6 +594,9 @@ fn write_quotes_toml(path: &PathBuf, quotes: &[ImportedQuote]) -> std::io::Resul
         content.push_str(&format!("japanese = \"{}\"\n", toml_escape(&q.japanese)));
         if let Some(t) = &q.translation {
             content.push_str(&format!("translation = \"{}\"\n", toml_escape(t)));
+        }
+        if let Some(r) = &q.romaji {
+            content.push_str(&format!("romaji = \"{}\"\n", toml_escape(r)));
         }
         if let Some(s) = &q.source {
             content.push_str(&format!("source = \"{}\"\n", toml_escape(s)));
@@ -641,17 +688,16 @@ pub fn run_init(args: &AnkiArgs) -> Result<()> {
             continue;
         }
 
-        // Fetch a single note to show sample fields
-        let sample_batch = client.notes_info(&note_ids[..1])?;
-        let sample = match sample_batch.first() {
-            Some(n) => n,
-            None => {
-                println!("Deck \"{deck}\" returned no notes, skipping.");
-                continue;
-            }
-        };
+        // Fetch a small batch of notes to use as samples
+        let sample_count = note_ids.len().min(10);
+        let samples = client.notes_info(&note_ids[..sample_count])?;
+        if samples.is_empty() {
+            println!("Deck \"{deck}\" returned no notes, skipping.");
+            continue;
+        }
+        let field_names = samples[0].field_order.clone();
 
-        let mapping = get_field_mapping(&sample.field_order, sample, deck, args)?;
+        let mapping = get_field_mapping(&field_names, &samples, deck, args)?;
 
         // Fetch all notes
         let notes = client.notes_info(&note_ids)?;

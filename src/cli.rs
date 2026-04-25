@@ -113,6 +113,10 @@ pub struct AnkiArgs {
     #[arg(long)]
     pub furigana_field: Option<String>,
 
+    // Field to use as the romaji (romanized) reading
+    #[arg(long)]
+    pub romaji_field: Option<String>,
+
     // Field to use as the source label
     #[arg(long)]
     pub source_field: Option<String>,
