@@ -162,17 +162,18 @@ This connects to `http://localhost:8765`, shows your available decks, and walks 
 
 **Non-interactive import (for scripting):**
 ```bash
-kotofetch init anki \
+kotofetch init  w \
   --deck "Core 2k" \
   --japanese-field Expression \
   --translation-field Meaning \
   --furigana-field Reading \
+  --romaji-field Romaji \
   --yes
 ```
 
 Each imported deck is saved as `~/.config/kotofetch/quotes/<deck-name>.toml`. After importing, use it with:
 ```bash
-kotofetch --modes core-2k
+kotofetch --modes <deck-name>
 ```
 
 **Furigana support:** if your note's japanese field contains Anki's native furigana syntax (`食[た]べる`), it is automatically converted to kotofetch's inline format (`食(た)べる`). If the japanese field has no readings, the furigana field is used as a fallback. HTML ruby tags (`<ruby>/<rt>`) are also converted.
