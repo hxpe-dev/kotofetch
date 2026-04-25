@@ -1,11 +1,11 @@
 use crate::config::RuntimeConfig;
+use crate::quotes::BUILTIN_QUOTES;
 use crate::quotes::Quote;
 use crate::quotes::QuotesFile;
-use crate::quotes::BUILTIN_QUOTES;
 use console::{Color, Style};
 use rand::prelude::*;
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 use std::{
     fs,
@@ -582,10 +582,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
 
         // fallback to built-in
         let file_str = file_name.to_str().unwrap_or_default();
-        if let Some((_, content)) = BUILTIN_QUOTES
-            .iter()
-            .find(|&&(name, _)| name == file_str)
-        {
+        if let Some((_, content)) = BUILTIN_QUOTES.iter().find(|&&(name, _)| name == file_str) {
             match toml::from_str::<QuotesFile>(content) {
                 Ok(parsed) => pool.extend(parsed.quotes),
                 Err(e) => eprintln!("Failed to parse built-in {}: {e}", file_str),
