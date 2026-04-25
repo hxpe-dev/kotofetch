@@ -158,21 +158,19 @@ Built-in quotes are embedded in the binary. To add your own quotes, create:
 
 ```toml
 [[quote]]
-japanese = "逃げちゃダメだ"
+japanese = "逃(に)げちゃダメだ"
 translation = "You mustn't run away."
 romaji = "Nigeccha dame da"
 source = "Neon Genesis Evangelion"
-furigana = "にげ"
 
 [[quote]]
-japanese = "人は心で生きるんだ"
+japanese = "人(ひと)は心(こころ)で生(い)きるんだ"
 translation = "People live by their hearts."
 romaji = "Hito wa kokoro de ikiru nda"
 source = "Your Name"
-furigana = "ひと ここ いき"
 ```
 
-> **Note:** The `furigana` field contains space-separated readings corresponding to each kanji character. Each reading should match one kanji in order. Readings for non-kanji characters should be omitted. For example, `"逃げる"` (to run away) with furigana `"にげ"` provides reading for `逃`.
+> **Note:** Furigana readings are embedded inline in the `japanese` field using parentheses: `kanji(reading)`. The reading immediately follows the kanji it annotates. Compound (multi-kanji) words can share a single reading, e.g. `大事(だいじ)`. Kanji without a `(reading)` after them simply have no annotation. The parentheses are automatically stripped in non-furigana display modes.
 - These custom quotes automatically merge with the built-in ones.
 
 You can see the built-in quotes in the [quotes folder](quotes/).
@@ -196,12 +194,12 @@ kotofetch --modes anime,mycustomquotes  # display quotes from specific files
 
 **Furigana Example:**
 ```
-井 の 中 の 蛙 大 海 を 知 ら ず
- い   なか   かわず たいかい    し 
+井の中の蛙大海を知らず
+い   なか  かわず たいかい   し
  — 井の中の蛙大海を知らず
 ```
 
-Furigana displays the reading for each kanji character, properly aligned underneath. Not all quotes have furigana available—only those that include the `furigana` field in their definition.
+Furigana displays readings centered below their kanji, supporting both single-kanji annotations (`知(し)`) and compound words (`大海(たいかい)`). Only quotes that include inline ruby markup in their `japanese` field will show furigana readings.
 
 ## Contributing
 Contributions are welcome (donations too, they support me a lot in my work)! Here's how you can help:
