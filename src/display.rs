@@ -48,44 +48,102 @@ fn simulate_font_size(s: &str, size: &str) -> String {
     }
 }
 
-fn format_furigana(japanese: &str, furigana: &str) -> (String, String) {
-    let chars: Vec<char> = japanese.chars().collect();
-    let readings: Vec<&str> = furigana.split_whitespace().collect();
+enum Segment {
+    Plain(String),
+    Ruby { base: String, reading: String },
+}
 
-    if readings.is_empty() {
-        return (japanese.to_string(), String::new());
+fn push_plain(segments: &mut Vec<Segment>, text: &str) {
+    match segments.last_mut() {
+        Some(Segment::Plain(s)) => s.push_str(text),
+        _ => segments.push(Segment::Plain(text.to_string())),
+    }
+}
+
+fn parse_ruby(s: &str) -> Vec<Segment> {
+    let mut segments: Vec<Segment> = Vec::new();
+    let mut kanji_run = String::new();
+    let mut chars = s.chars();
+
+    while let Some(c) = chars.next() {
+        if is_kanji(c) {
+            kanji_run.push(c);
+        } else if c == '(' && !kanji_run.is_empty() {
+            let mut reading = String::new();
+            let mut closed = false;
+            for rc in chars.by_ref() {
+                if rc == ')' {
+                    closed = true;
+                    break;
+                }
+                if rc == '\n' {
+                    // Newline terminates an unclosed paren — treat as plain
+                    reading.push(rc);
+                    break;
+                }
+                reading.push(rc);
+            }
+            if closed {
+                segments.push(Segment::Ruby {
+                    base: kanji_run.clone(),
+                    reading,
+                });
+            } else {
+                let mut plain = kanji_run.clone();
+                plain.push('(');
+                plain.push_str(&reading);
+                push_plain(&mut segments, &plain);
+            }
+            kanji_run.clear();
+        } else {
+            if !kanji_run.is_empty() {
+                push_plain(&mut segments, &kanji_run.clone());
+                kanji_run.clear();
+            }
+            push_plain(&mut segments, &c.to_string());
+        }
     }
 
+    if !kanji_run.is_empty() {
+        push_plain(&mut segments, &kanji_run);
+    }
+
+    segments
+}
+
+fn format_ruby(segments: &[Segment]) -> (String, String) {
     let mut kanji_line = String::new();
     let mut furigana_line = String::new();
-    let mut reading_idx = 0;
 
-    for c in chars {
-        if is_kanji(c) {
-            let char_width = c.width().unwrap_or(2);
-            if reading_idx < readings.len() {
-                let reading = readings[reading_idx];
-                let reading_width = reading.width();
-                let col_width = char_width.max(reading_width);
-                let kanji_left = (col_width - char_width) / 2;
-                let kanji_right = col_width - char_width - kanji_left;
-                let reading_left = (col_width - reading_width) / 2;
-                let reading_right = col_width - reading_width - reading_left;
+    for segment in segments {
+        match segment {
+            Segment::Plain(text) => {
+                for c in text.chars() {
+                    if c == '\n' {
+                        kanji_line.push('\n');
+                        furigana_line.push('\n');
+                    } else {
+                        let w = c.width().unwrap_or(1);
+                        kanji_line.push(c);
+                        furigana_line.push_str(&" ".repeat(w));
+                    }
+                }
+            }
+            Segment::Ruby { base, reading } => {
+                let base_width = UnicodeWidthStr::width(base.as_str());
+                let reading_width = UnicodeWidthStr::width(reading.as_str());
+                let col = base_width.max(reading_width);
+                let kanji_left = (col - base_width) / 2;
+                let kanji_right = col - base_width - kanji_left;
+                let reading_left = (col - reading_width) / 2;
+                let reading_right = col - reading_width - reading_left;
                 kanji_line.push_str(&" ".repeat(kanji_left));
-                kanji_line.push(c);
+                kanji_line.push_str(base);
                 kanji_line.push_str(&" ".repeat(kanji_right));
                 furigana_line.push_str(&" ".repeat(reading_left));
                 furigana_line.push_str(reading);
                 furigana_line.push_str(&" ".repeat(reading_right));
-                reading_idx += 1;
-            } else {
-                kanji_line.push(c);
-                furigana_line.push_str(&" ".repeat(char_width));
             }
-        } else {
-            let char_width = c.width().unwrap_or(1);
-            kanji_line.push(c);
-            furigana_line.push_str(&" ".repeat(char_width));
         }
     }
 
@@ -93,6 +151,22 @@ fn format_furigana(japanese: &str, furigana: &str) -> (String, String) {
         kanji_line.trim_end().to_string(),
         furigana_line.trim_end().to_string(),
     )
+}
+
+fn strip_ruby(s: &str) -> String {
+    parse_ruby(s)
+        .iter()
+        .map(|seg| match seg {
+            Segment::Plain(t) => t.as_str(),
+            Segment::Ruby { base, .. } => base.as_str(),
+        })
+        .collect()
+}
+
+fn has_ruby_markup(s: &str) -> bool {
+    parse_ruby(s)
+        .iter()
+        .any(|seg| matches!(seg, Segment::Ruby { .. }))
 }
 
 fn is_kanji(c: char) -> bool {
@@ -530,7 +604,6 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
             translation: None,
             romaji: None,
             source: None,
-            furigana: None,
         });
     }
 
@@ -543,7 +616,6 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
     .unwrap();
 
     // render
-    let jap = simulate_font_size(&quote.japanese, &runtime.font_size);
     let translation_style = color_from_hex(&runtime.translation_color);
     let show_source = runtime.source && quote.source.is_some();
     let source_style = Style::new().dim();
@@ -560,8 +632,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
     let show_furigana = matches!(
         runtime.show_translation,
         crate::config::TranslationMode::Furigana
-    ) && quote.furigana.is_some();
-    let furigana = quote.furigana.as_deref();
+    ) && has_ruby_markup(&quote.japanese);
 
     let jap_style = if runtime.bold {
         color_from_hex(&runtime.quote_color).bold()
@@ -572,16 +643,13 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
     let border_color = color_from_hex(&runtime.border_color);
 
     let (jap_lines, furigana_lines): (Vec<String>, Vec<String>) = if show_furigana {
-        if let Some(f) = furigana {
-            let (kanji, reading) = format_furigana(&jap, f);
-            let kanji_lines: Vec<String> = kanji.lines().map(|s| s.to_string()).collect();
-            let reading_lines: Vec<String> = reading.lines().map(|s| s.to_string()).collect();
-            (kanji_lines, reading_lines)
-        } else {
-            let lines: Vec<String> = jap.lines().map(|s| s.to_string()).collect();
-            (lines, vec![])
-        }
+        let segments = parse_ruby(&quote.japanese);
+        let (kanji, reading) = format_ruby(&segments);
+        let kanji_lines: Vec<String> = kanji.lines().map(|s| s.to_string()).collect();
+        let reading_lines: Vec<String> = reading.lines().map(|s| s.to_string()).collect();
+        (kanji_lines, reading_lines)
     } else {
+        let jap = simulate_font_size(&strip_ruby(&quote.japanese), &runtime.font_size);
         let lines: Vec<String> = jap.lines().map(|s| s.to_string()).collect();
         (lines, vec![])
     };

@@ -14,7 +14,6 @@ pub struct Quote {
     pub translation: Option<String>,
     pub romaji: Option<String>,
     pub source: Option<String>,
-    pub furigana: Option<String>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
