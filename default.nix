@@ -2,13 +2,13 @@
 
 pkgs.rustPlatform.buildRustPackage rec {
   pname = "kotofetch";
-  version = "0.2.18";
+  version = "0.2.19";
 
   src = pkgs.fetchFromGitHub {
     owner = "hxpe-dev";
     repo = "kotofetch";
     rev = "v${version}";
-    sha256 = "sha256-sU+GeZKr8Tpg52XzxLmuA3NyqA47wqANL4yReFJpI4M=";
+    sha256 = "sha256-owtwG1VvbR5aAbUlW/SL/bx1mfUGKq2JQMPy8b74Qlc=";
   };
 
   cargoLock = {
