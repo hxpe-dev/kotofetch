@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -82,7 +82,7 @@ jobs:
           Compress-Archive -Path "release/$TARGET" -DestinationPath "release/${BIN_NAME}-${VERSION}-${TARGET}.zip"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: kotofetch-${{ matrix.target }}
           path: release/*
@@ -91,8 +91,16 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout source
+        uses: actions/checkout@v6
+
+      - name: Extract release notes
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          awk "/^## ${TAG}$/{found=1; next} found && /^## /{exit} found{print}" CHANGELOG.md > release_notes.md
+
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: artifacts
 
@@ -100,6 +108,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: artifacts/**/*
+          body_path: release_notes.md
           replace: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
