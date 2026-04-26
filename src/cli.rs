@@ -1,9 +1,12 @@
-use clap::{Parser, ValueEnum};
+use clap::{Args, Parser, Subcommand, ValueEnum};
 use std::path::PathBuf;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
 pub struct Cli {
+    #[command(subcommand)]
+    pub command: Option<Commands>,
+
     // Path to config file (TOML). Defaults to ~/.config/kotofetch/config.toml
     #[arg(short, long)]
     pub config: Option<PathBuf>,
@@ -71,6 +74,60 @@ pub struct Cli {
     // Dynamic re-centering text
     #[arg(long)]
     pub dynamic: Option<bool>,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum Commands {
+    // Import quotes from external sources
+    Init {
+        #[command(subcommand)]
+        source: InitSource,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum InitSource {
+    // Import Anki decks via AnkiConnect
+    Anki(AnkiArgs),
+}
+
+#[derive(Args, Debug)]
+pub struct AnkiArgs {
+    // AnkiConnect URL
+    #[arg(long, default_value = "http://localhost:8765")]
+    pub url: String,
+
+    // Deck name(s) to import (repeatable; skips interactive deck picker)
+    #[arg(long)]
+    pub deck: Vec<String>,
+
+    // Field to use as the Japanese text
+    #[arg(long)]
+    pub japanese_field: Option<String>,
+
+    // Field to use as the English translation
+    #[arg(long)]
+    pub translation_field: Option<String>,
+
+    // Field containing Anki furigana markup (used if japanese field has none)
+    #[arg(long)]
+    pub furigana_field: Option<String>,
+
+    // Field to use as the romaji (romanized) reading
+    #[arg(long)]
+    pub romaji_field: Option<String>,
+
+    // Field to use as the source label
+    #[arg(long)]
+    pub source_field: Option<String>,
+
+    // Output directory (default: ~/.config/kotofetch/quotes/)
+    #[arg(long)]
+    pub output_dir: Option<PathBuf>,
+
+    // Skip all prompts; use heuristic field mapping and overwrite existing files
+    #[arg(long, default_value_t = false)]
+    pub yes: bool,
 }
 
 #[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]
