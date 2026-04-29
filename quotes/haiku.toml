@@ -56,18 +56,12 @@ source = "Matsuo Bashō"
 japanese = "朝顔(あさがお)に\nつるべ取(と)られて\nもらい水(みず)"
 translation = "Morning glory—\nMy well bucket was taken,\nGot water from neighbor."
 romaji = "Asagao ni\nTsurube torarete\nMorai mizu"
-source = "Kobayashi Issa"
+source = "Kaga Chiyojo"
 
 [[quote]]
 japanese = "名月(めいげつ)や\n池(いけ)をめぐりて\n夜(よ)もすがら"
 translation = "Bright moon—\nAround the pond\nAll night long."
 romaji = "Meigetsu ya\nIke o megurite\nYo mo sugara"
-source = "Matsuo Bashō"
-
-[[quote]]
-japanese = "夏草(なつくさ)や\n武士(ぶし)どもが\n夢(ゆめ)の跡(あと)"
-translation = "Summer grasses—\nAll that remains\nOf warriors' dreams."
-romaji = "Natsukusa ya\nBushidomo ga\nYume no ato"
 source = "Matsuo Bashō"
 
 [[quote]]
