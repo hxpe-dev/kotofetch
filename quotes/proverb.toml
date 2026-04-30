@@ -56,7 +56,7 @@ source = "Japanese proverb"
 japanese = "虎穴(こけつ)に入(い)らずんば虎子(こじ)を得(え)ず"
 translation = "You cannot get a tiger cub without entering the tiger's cave."
 romaji = "Koketsu ni irazunba koji o ezu"
-source = "Japanese proverb"
+source = "Adopted proverb"
 
 [[quote]]
 japanese = "口(くち)は災(わざわい)の元(もと)"
@@ -152,7 +152,7 @@ source = "Japanese proverb"
 japanese = "良薬(りょうやく)は口(くち)に苦(にが)し"
 translation = "Good medicine tastes bitter—The best advice is often hard to hear."
 romaji = "Ryōyaku wa kuchi ni nigashi"
-source = "Chinese proverb (adopted in JP)"
+source = "Adopted proverb"
 
 [[quote]]
 japanese = "知(し)らぬが仏(ほとけ)"
@@ -162,7 +162,7 @@ source = "Japanese proverb"
 
 [[quote]]
 japanese = "継続(けいぞく)は力(ちから)なり"
-translation = "Continuity is power—Perseverance is the key to success."
+translation = "Continuity becomes power."
 romaji = "Keizoku wa chikara nari"
 source = "Japanese proverb"
 
@@ -174,6 +174,54 @@ source = "Japanese proverb"
 
 [[quote]]
 japanese = "習(なら)うより慣(な)れろ"
-translation = "Learn by doing—Practice over theory."
+translation = "Learn by doing."
 romaji = "Narau yori narero"
 source = "Japanese proverb"
+
+[[quote]]
+japanese = "塵(ちり)も積(つ)もれば山(やま)となる"
+translation = "Even dust, when piled up, becomes a mountain."
+romaji = "Chiri mo tsumoreba yama to naru"
+source = "Japanese proverb"
+
+[[quote]]
+japanese = "弘法(こうぼう)にも筆(ふで)の誤(あやま)り"
+translation = "Even Kōbō Daishi makes brush mistakesj."
+romaji = "Kōbō ni mo fude no ayamari"
+source = "Japanese proverb"
+
+[[quote]]
+japanese = "蓼(たで)食(く)う虫(むし)も好(す)き好(ず)き"
+translation = "Some bugs love knotweed—there's no accounting for taste."
+romaji = "Tade kuu mushi mo suki zuki"
+source = "Japanese proverb"
+
+[[quote]]
+japanese = "渡(わた)る世間(せけん)に鬼(おに)はない"
+translation = "There are no demons in this world we pass through."
+romaji = "Wataru seken ni oni wa nai"
+source = "Japanese proverb"
+
+[[quote]]
+japanese = "どんぐりの背(せ)比(くら)べ"
+translation = "Acorns comparing heights."
+romaji = "Donguri no seikurabe"
+source = "Japanese proverb"
+
+[[quote]]
+japanese = "鳴(な)かぬなら殺(ころ)してしまえほととぎす"
+translation = "If the cuckoo does not sing, kill it."
+romaji = "Nakanu nara koroshite shimae hototogisu"
+source = "Apocrypha"
+
+[[quote]]
+japanese = "鳴(な)かぬなら鳴(な)かせてみせようほととぎす"
+translation = "If the cuckoo does not sing, make it sing."
+romaji = "Nakanu nara nakasete miseyō hototogisu"
+source = "Apocrypha"
+
+[[quote]]
+japanese = "鳴(な)かぬなら鳴(な)くまで待(ま)とうほととぎす"
+translation = "If the cuckoo does not sing, wait until it does."
+romaji = "Nakanu nara naku made matō hototogisu"
+source = "Apocrypha"

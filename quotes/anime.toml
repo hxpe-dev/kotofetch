@@ -85,17 +85,17 @@ source = "Berserk"
 [[quote]]
 japanese = "アリを踏(ふみ)み潰(つぶ)すことを気(き)にしてたら歩(ある)くこともできゃしねえんだ"
 translation = "If you worry about stepping on ants, you won't be able to walk."
-romaji = "ari o fumi tsubusu koto o ki ni shitetara aruku koto mo deki yashinēnda"
+romaji = "ari o fumi tsubusu koto o ki ni shitetara aruku koto mo dekyashinēnda"
 source = "Berserk"
 
 [[quote]]
 japanese = "誰(だれ)のためでもない　自分(じぶん)が自分(じぶん)自身(じしん)のために成(な)す夢(ゆめ)です"
 translation = "It's a dream I achieve for myself, not for anyone else."
-romaji = "dare no tame de mo nai jibun ga jibun jishin no tame ni nasu yumedesu"
+romaji = "dare no tame de mo nai jibun ga jibun jishin no tame ni nasu yume desu"
 source = "Berserk"
 
 [[quote]]
-japanese = "私(わたし)にとって友(とも)とはそんな…「対等(たいとう)な者(もの)」だと思(おも)う"
+japanese = "私(わたし)にとって友(とも)とはそんな…「対等(たいとう)な者(もの)」だと思(おも)っています"
 translation = "To me, a friend is someone who is an equal."
 romaji = "watakushi ni totte tomo to wa sonna taitou na mono da to omotte imasu"
 source = "Berserk"
@@ -125,7 +125,7 @@ romaji = "hikari ga tsuyokereba tsuyoi hodo koi kage ga ochiru monosa"
 source = "Berserk"
 
 [[quote]]
-japanese = "憎(にく)しみってやつわな、悲(かな)しみに面(おも)と向(む)かって腰(こし)を据(す)えらんねえやつが逃(に)げ込(こ)む場所(ばしょ)だ"
+japanese = "憎(にく)しみってやつはな、悲(かな)しみに面(おも)と向(む)かって腰(こし)を据(す)えらんねえやつが逃(に)げ込(こ)む場所(ばしょ)だ"
 translation = "Hatred is a place where those who can't stand facing sadness can escape."
 romaji = "nikushimi tte yatsu wana , kanashimi ni men to mukatte koshi o sue ranne e yatsu ga nigekomu bashoda"
 source = "Berserk"
@@ -155,15 +155,15 @@ romaji = "Inochi ni kakawaru koto igai dō demo ii koto bakkari..."
 source = "Chibi Maruko-chan"
 
 [[quote]]
-japanese = "怖(こわ)い…自分(じぶん)の心(こころ)に踏(ふみ)み込(こ)むのが怖(こわ)い"
+japanese = "怖(こわ)い…自分(じぶん)の心(こころ)に踏(ふ)み込(こ)むのが怖(こわ)い"
 translation = "Scary... It's scary to step into my own heart."
 romaji = "Kowai... jibun no kokoro ni fumikomu no ga kowai"
 source = "Erased"
 
 [[quote]]
-japanese = "善行(ぜんこう)も悪行(あっこう)も本質(ほんしつ)は同(おな)じ、人(ひと)が自(みずか)らの欠陥(けってん)を補(おぎな)うための行為(こうい)に過(す)ぎない"
+japanese = "善行(ぜんこう)も悪行(あっこう)も本質(ほんしつ)は同(おな)じ、人(ひと)が自(みずか)らの欠陥(けっかん)を補(おぎな)うための行為(こうい)に過(す)ぎない"
 translation = "Good deeds and bad deeds are essentially the same, they're just actions people take to compensate for their own flaws."
-romaji = "Zenkō mo akkō mo honshitsu wa onaji, hito ga mizukara no ketsujō o oginau tame no okonai ni suginai"
+romaji = "Zenkō mo akkō mo honshitsu wa onaji, hito ga mizukara no kekkan o oginau tame no kōi ni suginai"
 source = "Erased"
 
 [[quote]]
@@ -239,6 +239,24 @@ romaji = "Nigetara hitotsu, susumeba futatsu"
 source = "Mobile Suit Gundam: The Witch from Mercury"
 
 [[quote]]
+japanese = "二人(ふたり)のこの手(て)が真(ま)っ赤(か)に燃(も)える！幸(しあわ)せ掴(つか)めと轟(とどろ)き叫(さけ)ぶ！"
+translation = "Our two hands glow bright red! Their loud roar tells us to grasp happiness!"
+romaji = "Futari no kono te ga makka ni moeru! Shiawase tsukame to todoroki sakebu!"
+source = "Mobile Fighter G Gundam"
+
+[[quote]]
+japanese = "殺(ころ)されたから殺(ころ)して… 殺(ころ)したから殺(ころ)されて… それで本当(ほんとう)に最後(さいご)は平和(へいわ)になるのかよ！"
+translation = "One kills because another is killed! Then gets killed because they kill! How the hell is that going to bring us peace?"
+romaji = "Korosareta kara koroshite... Koroshita kara korosarete... Sore de hontō ni saigo wa heiwa ni naru no ka yo!"
+source = "Mobile Suit Gundam SEED"
+
+[[quote]]
+japanese = "俺(おれ)は止(と)まんねぇからよ、お前(まえ)らが止(と)まんねぇかぎり、その先(さき)に俺(おれ)はいるぞ！だからよ、止(と)まるんじゃねぇぞ…"
+translation = "I won't stop, you see. As long as you guys don't stop, I'll be there ahead of you! That's why... don't you stop..."
+romaji = "Ore wa toman nē kara yo, omae-ra ga toman nē kagiri, sono saki ni ore wa iru zo! Dakara yo, tomaru n ja nē zo..."
+source = "Mobile Suit Gundam: Iron-Blooded Orphans"
+
+[[quote]]
 japanese = "今日(きょう)も一日(いちにち)がんばるぞい！"
 translation = "I'll do my best today!"
 romaji = "Kyō mo ichinichi ganbaru zoi!"
@@ -277,7 +295,7 @@ source = "Toradora! (Minori Kushieda)"
 [[quote]]
 japanese = "自分(じぶん)の幸(しあわ)せは自分(じぶん)の手(て)でしか作(つく)れない。他(ほか)の誰(だれ)かに頼(たよ)るものじゃない！"
 translation = "My happiness can only be made by my own hands. My happiness doesn't depend on anyone but me!"
-romaji = "Jibun no shiawase wa jibun no te de shika tsukurenai. Hoka no dareka ni tayoru mono janai!"
+romaji = "Jibun de no shiawase wa jibun no te de shika tsukurenai. Hoka no dareka ni tayoru mono janai!"
 source = "Toradora! (Minori Kushieda)"
 
 [[quote]]
@@ -287,7 +305,7 @@ romaji = "Rikai shite kureru hito ga hitori demo ireba, sore de ii no."
 source = "Toradora! (Ami Kawashima)"
 
 [[quote]]
-japanese = "もう足(あし)を上(あ)げたんでしょ？なら、もう一(ひと)つの選択肢(せんたくし)しかない！その足(あし)を踏(ふみ)み出(だ)すのよ！"
+japanese = "もう足(あし)を上(あ)げたんでしょ？なら、もう一(ひと)つの選択肢(せんたくし)しかない！その足(あし)を踏(ふ)み出(だ)すのよ！"
 translation = "Haven't you already lifted your foot, preparing to step forward? Then you only have one option! Finish taking that step!"
 romaji = "Mō ashi o ageta n desho? Nara, mō hitotsu no sentakushi shika nai! Sono ashi o fumidasu no yo!"
 source = "Toradora! (Sumire Kanō)"
@@ -309,6 +327,30 @@ japanese = "戻(もど)れるうちは、それは旅(たび)じゃない。戻(
 translation = "If you can still turn back, it's not really a journey. When you hit the point of no return, that's the moment it becomes a journey."
 romaji = "Modoreru uchi wa, sore wa tabi janai. Modorenaku natta toki, hajimete sore wa tabi ni naru no."
 source = "A Place Further Than the Universe (Hinata Miyake, Episode 2)"
+
+[[quote]]
+japanese = "よろしくお願(ねが)いしまぁぁぁすっ！！"
+translation = "Please take good care of meeee!!"
+romaji = "Yoroshiku onegai shimāāāsu!!"
+source = "Summer Wars"
+
+[[quote]]
+japanese = "諦(あきら)めなさんな。諦(あきら)めないことが肝心(かんじん)だよ。あんたならできる。できるって。"
+translation = "Don't give up. Not giving up is what matters. You can do it. You really can."
+romaji = "Akirame nasan na. Akiramenai koto ga kanjin da yo. Anta nara dekiru. Dekiru tte."
+source = "Summer Wars"
+
+[[quote]]
+japanese = "僕(ぼく)たちが求(もと)めているのは、誰(だれ)かを助(たす)けることであって、感謝(かんしゃ)の言葉(ことば)じゃない。相手(あいて)に貸(か)しを作(つく)ってしまったら、本当(ほんとう)の意味(いみ)で助(たす)けたことにはならないだろう"
+translation = "What we want is to help people, not words of gratitude. If we make people indebted to us, we haven't really helped them."
+romaji = "Boku-tachi ga motomete iru no wa, dareka o tasukeru koto de atte, kansha no kotoba ja nai. Aite ni kashi o tsukutte shimattara, hontō no imi de tasuketa koto ni wa naranai darō."
+source = "Frieren: Beyond Journey's End"
+
+[[quote]]
+japanese = "雪(ゆき)がどうして白(しろ)いか知(し)っているか？自分(じぶん)がどんな色(いろ)だったか忘(わす)れてしまったからさ"
+translation = "Do you know why snow is white? Because it forgot what color it was."
+romaji = "Yuki ga dōshite shiroi ka shitte iru ka? Jibun ga donna iro datta ka wasurete shimatta kara sa."
+source = "Code Geass"
 
 [[quote]]
 japanese = "逃(にげ)られない"
