@@ -7,10 +7,18 @@
 
 ## Contents
 - [Installation](#installation)
+  - [Arch Linux / AUR](#arch-linux--aur)
+  - [Nix / NixOS](#nix--nixos)
+  - [Prebuilt Binaries](#prebuilt-binaries)
+  - [From Source](#from-source)
 - [Requirements](#requirements)
 - [Configuration](#configuration)
+  - [Config File](#config-file)
+  - [Importing Anki decks](#importing-anki-decks)
+  - [Custom quotes](#custom-quotes)
 - [Usage](#usage)
-- [Importing Anki decks](#importing-anki-decks)
+  - [Translation Modes](#translation-modes)
+- [Community Showcase](#community-showcase)
 - [Contributing](#contributing)
 
 ## Installation
