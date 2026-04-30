@@ -227,6 +227,35 @@ kotofetch --modes anime,mycustomquotes  # display quotes from specific files
 
 Furigana displays readings centered below their kanji, supporting both single-kanji annotations (`知(し)`) and compound words (`大海(たいかい)`). Only quotes that include inline ruby markup in their `japanese` field will show furigana readings.
 
+
+## Community Showcase
+
+A huge thanks to the community members who shared their setups!
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./images/demo_fullscreen_01.png" width="400px;" alt="Setup by Hxpe"/><br>
+      <sub>Setup by <a href="https://github.com/hxpe-dev">@hxpe</a></sub>
+    </td>
+    <td align="center">
+      <img src="./images/demo_lolcat.png" width="400px;" alt="Setup by Coko_7"/><br>
+      <sub>Setup by <a href="https://www.reddit.com/user/coko_7">@coko_7</a></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./images/demo_fullscreen_02.png" width="400px;" alt="Setup by Kikeijuu"/><br>
+      <sub>Setup by <a href="https://github.com/kikeijuu">@kikeijuu</a></sub>
+    </td>
+    <td align="center">
+      <img src="./images/demo_fullscreen_03.png" width="400px;" alt="Setup by QL_Leo"/><br>
+      <sub>Setup by <a href="https://www.reddit.com/user/Traditional_Read9408">@QL_Leo</a></sub>
+    </td>
+  </tr>
+</table>
+
+
 ## Contributing
 Contributions are welcome (donations too, they support me a lot in my work)! Here's how you can help:
 1. **Fork** the repository.
