@@ -261,7 +261,7 @@ Contributions are welcome (donations too, they support me a lot in my work)! Her
 1. **Fork** the repository.
 2. **Clone** your fork locally:
 ```bash
-git clone https://github.com/YOUR_USERNAME/kotofetch.git
+git clone https://github.com/hxpe-dev/kotofetch.git
 cd kotofetch
 ```
 3. **Create a branch** for your changes:
