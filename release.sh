@@ -198,14 +198,22 @@ else
     sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
     ok "Updated pkgver=$NEW_VERSION pkgrel=1 in PKGBUILD"
 
-    echo "    Running makepkg -g to fetch and hash sources..."
-    NEW_SUMS=$(makepkg -g 2>/dev/null)
-    awk -v sums="$NEW_SUMS" '
-        /^sha256sums=/ { found=1 }
-        found && /\)/ { print sums; found=0; next }
-        found { next }
-        !found { print }
-    ' PKGBUILD > PKGBUILD.tmp && mv PKGBUILD.tmp PKGBUILD
+    TARBALL_URL="https://github.com/hxpe-dev/kotofetch/releases/download/v${NEW_VERSION}/kotofetch-v${NEW_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+    echo "    Fetching tarball to compute sha256..."
+    TARBALL_HASH=$(curl -sL "$TARBALL_URL" | sha256sum | awk '{print $1}')
+    [[ -z "$TARBALL_HASH" ]] && die "Could not compute tarball hash — is the release published?"
+    ok "Tarball sha256: $TARBALL_HASH"
+
+    python3 - "$TARBALL_HASH" <<'PYEOF'
+import sys, re
+hash = sys.argv[1]
+with open('PKGBUILD', 'r') as f:
+    content = f.read()
+new_block = "sha256sums=(\n  '{}'\n  'SKIP'\n  'SKIP'\n)".format(hash)
+content = re.sub(r'sha256sums=\(.*?\)', new_block, content, flags=re.DOTALL)
+with open('PKGBUILD', 'w') as f:
+    f.write(content)
+PYEOF
     ok "Updated sha256sums in PKGBUILD"
 
     echo "    Running makepkg -C to verify..."
