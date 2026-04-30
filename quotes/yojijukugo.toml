@@ -89,9 +89,9 @@ romaji = "ichi ren taku shō"
 source = "四字熟語 - yojijukugo"
 
 [[quote]]
-japanese = "一(いっ)心(しん)専(せん)意(い)"
-translation = "One heart, devoted intention"
-romaji = "i sshin sen -i"
+japanese = "一(いち)意(い)専(せん)心(しん)"
+translation = "One will wholly devoted"
+romaji = "i chii sen shin"
 source = "四字熟語 - yojijukugo"
 
 [[quote]]
@@ -103,7 +103,7 @@ source = "四字熟語 - yojijukugo"
 [[quote]]
 japanese = "一(いっ)触(しょく)即(そく)発(はつ)"
 translation = "One touch, immediate explosion"
-romaji = "i ssoku soku hatsu"
+romaji = "i sshoku soku hatsu"
 source = "四字熟語 - yojijukugo"
 
 [[quote]]
@@ -119,15 +119,15 @@ romaji = "san ko no rei"
 source = "四字熟語 - yojijukugo"
 
 [[quote]]
-japanese = "六(ろく)根(こん)清(じょう)浄(じょう)"
+japanese = "六(ろっ)根(こん)清(しょう)浄(じょう)"
 translation = "Six roots pure [and] clean - Free from the worldly desires"
-romaji = "roku kon jō jō"
+romaji = "rokkon shō jō"
 source = "四字熟語 - yojijukugo"
 
 [[quote]]
-japanese = "八(はち)面(めん)六(ろく)臂(ひ)"
+japanese = "八(はち)面(めん)六(ろっ)臂(ぴ)"
 translation = "Eight faces, six arms - Extraordinarily capable"
-romaji = "ha ppō roku hi"
+romaji = "hachi men ro ppi"
 source = "四字熟語 - yojijukugo"
 
 [[quote]]
