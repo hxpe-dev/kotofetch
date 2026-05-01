@@ -23,9 +23,9 @@ pub struct Cli {
     #[arg(long)]
     pub width: Option<usize>,
 
-    // Choose translation mode: none, english or romaji
-    #[arg(long, value_enum)]
-    pub translation: Option<TranslationMode>,
+    // Choose translation modes (comma-separated): none, english, romaji, furigana
+    #[arg(long, value_enum, value_delimiter = ',', num_args = 1..)]
+    pub translation: Option<Vec<TranslationMode>>,
 
     // Translation color (hex like #888888 or named)
     #[arg(long)]

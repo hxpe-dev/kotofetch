@@ -316,8 +316,7 @@ fn print_boxed(
     border: bool,
     rounded_border: bool,
     border_color: Style,
-    translation: Option<&str>,
-    show_translation: bool,
+    translations: &[&str],
     translation_style: Style,
     source: Option<&str>,
     show_source: bool,
@@ -330,10 +329,8 @@ fn print_boxed(
     for line in &text_lines {
         max_width = max_width.max(UnicodeWidthStr::width(line.as_str()));
     }
-    if show_translation {
-        if let Some(t) = translation {
-            max_width = max_width.max(UnicodeWidthStr::width(t));
-        }
+    for t in translations {
+        max_width = max_width.max(UnicodeWidthStr::width(*t));
     }
     if show_source {
         if let Some(s) = source {
@@ -453,28 +450,26 @@ fn print_boxed(
         }
     }
 
-    // Translation
-    if show_translation {
-        if let Some(t) = translation {
-            println!(
-                "{}",
-                pad_to_center(
-                    &blank_line(inner_width, horizontal_padding, border, &border_color),
-                    box_width,
-                    centered
-                )
-            );
-            print_block(
-                &[t.to_string()],
-                translation_style,
-                inner_width,
-                horizontal_padding,
-                border,
+    // Translations
+    for t in translations {
+        println!(
+            "{}",
+            pad_to_center(
+                &blank_line(inner_width, horizontal_padding, border, &border_color),
                 box_width,
-                centered,
-                &border_color,
-            );
-        }
+                centered
+            )
+        );
+        print_block(
+            &[t.to_string()],
+            translation_style.clone(),
+            inner_width,
+            horizontal_padding,
+            border,
+            box_width,
+            centered,
+            &border_color,
+        );
     }
 
     // Source
@@ -617,19 +612,27 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
     let show_source = runtime.source && quote.source.is_some();
     let source_style = Style::new().dim();
 
-    let (translation, show_translation) = match runtime.show_translation {
-        crate::config::TranslationMode::None => (None, false),
-        crate::config::TranslationMode::English => {
-            (quote.translation.as_deref(), quote.translation.is_some())
-        }
-        crate::config::TranslationMode::Romaji => (quote.romaji.as_deref(), quote.romaji.is_some()),
-        crate::config::TranslationMode::Furigana => (None, false),
-    };
+    let mut translations: Vec<&str> = Vec::new();
+    let mut show_furigana = false;
 
-    let show_furigana = matches!(
-        runtime.show_translation,
-        crate::config::TranslationMode::Furigana
-    ) && has_ruby_markup(&quote.japanese);
+    for mode in &runtime.show_translation {
+        match mode {
+            crate::config::TranslationMode::None => {}
+            crate::config::TranslationMode::English => {
+                if let Some(t) = quote.translation.as_deref() {
+                    translations.push(t);
+                }
+            }
+            crate::config::TranslationMode::Romaji => {
+                if let Some(r) = quote.romaji.as_deref() {
+                    translations.push(r);
+                }
+            }
+            crate::config::TranslationMode::Furigana => {
+                show_furigana = has_ruby_markup(&quote.japanese);
+            }
+        }
+    }
 
     let jap_style = if runtime.bold {
         color_from_hex(&runtime.quote_color).bold()
@@ -687,9 +690,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
                 if !furigana_lines.is_empty() {
                     count += furigana_lines.len() + 1; // +1 for blank line between
                 }
-                if show_translation {
-                    count += 1;
-                }
+                count += translations.len() * 2;
                 if show_source {
                     count += 1;
                 }
@@ -723,8 +724,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
                 runtime.border,
                 runtime.rounded_border,
                 border_color.clone(),
-                translation,
-                show_translation,
+                &translations,
                 translation_style.clone(),
                 quote.source.as_deref(),
                 show_source,
@@ -761,8 +761,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
             runtime.border,
             runtime.rounded_border,
             border_color,
-            translation,
-            show_translation,
+            &translations,
             translation_style,
             quote.source.as_deref(),
             show_source,
