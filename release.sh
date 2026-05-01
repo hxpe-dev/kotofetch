@@ -43,6 +43,7 @@ PUSHED=false
 TAGGED=false
 TAG_PUSHED=false
 AUR_COMMITTED=false
+NIX_UPDATED=false
 TAG=""
 NEW_VERSION=""
 
@@ -77,6 +78,10 @@ rollback() {
     if [[ "$COMMITTED" == true && "$PUSHED" == false ]]; then
         git reset --soft HEAD~1
         warn "Reverted unpushed version bump commit"
+    fi
+
+    if [[ "$NIX_UPDATED" == true ]]; then
+        git checkout -- default.nix 2>/dev/null && warn "Reverted default.nix"
     fi
 
     if [[ "$CARGO_UPDATED" == true ]]; then
@@ -277,12 +282,13 @@ fi
 step "Nix update"
 
 mkdir -p "$NIX_TEST_DIR"
+NIX_UPDATED=true
 sed -i "s/version = \".*\"/version = \"$NEW_VERSION\"/" "$KOTOFETCH_DIR/default.nix"
 cp "$KOTOFETCH_DIR/default.nix" "$NIX_TEST_DIR/default.nix"
 cp "$KOTOFETCH_DIR/Cargo.lock" "$NIX_TEST_DIR/Cargo.lock"
 
 echo "    Running nix-build to get the correct sha256 (first run will fail)..."
-NEW_SHA=$(nix-build "$NIX_TEST_DIR/default.nix" 2>&1 | grep -oP '(?<=got:\s{1,20})sha256-\S+' | head -1 || true)
+NEW_SHA=$(nix-build "$NIX_TEST_DIR/default.nix" 2>&1 | grep -oP '(?<=got:\s{1,20})sha256-[a-zA-Z0-9+/=]+' | head -1 || true)
 
 if [[ -z "$NEW_SHA" ]]; then
     warn "Could not auto-extract sha256 from nix-build output."
