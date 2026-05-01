@@ -109,6 +109,6 @@ jobs:
         with:
           files: artifacts/**/*
           body_path: release_notes.md
-          replace: true
+          overwrite_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
