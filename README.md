@@ -171,7 +171,7 @@ This connects to `http://localhost:8765`, shows your available decks, and walks 
 
 **Non-interactive import (for scripting):**
 ```bash
-kotofetch init  w \
+kotofetch init anki \
   --deck "Core 2k" \
   --japanese-field Expression \
   --translation-field Meaning \
