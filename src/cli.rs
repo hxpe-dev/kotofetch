@@ -74,6 +74,10 @@ pub struct Cli {
     // Dynamic re-centering text
     #[arg(long)]
     pub dynamic: Option<bool>,
+
+    // Show furigana above or below the Japanese text
+    #[arg(long, value_enum)]
+    pub furigana_position: Option<FuriganaPosition>,
 }
 
 #[derive(Subcommand, Debug)]
@@ -136,4 +140,10 @@ pub enum TranslationMode {
     English,
     Romaji,
     Furigana,
+}
+
+#[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]
+pub enum FuriganaPosition {
+    Above,
+    Below,
 }

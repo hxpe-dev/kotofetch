@@ -323,6 +323,7 @@ fn print_boxed(
     source_style: Style,
     centered: bool,
     furigana_lines: Vec<String>,
+    furigana_above: bool,
 ) {
     // Compute max natural width of content
     let mut max_width = 0;
@@ -386,6 +387,55 @@ fn print_boxed(
         );
     }
 
+    // Furigana above Japanese text
+    // We compute the same left-margin the kanji line received and pre-apply it so that each reading lands directly under/above its kanji
+    if furigana_above && !furigana_lines.is_empty() {
+        for (idx, furi_line) in furigana_lines.iter().enumerate() {
+            let kanji_w = text_lines
+                .get(idx)
+                .map(|l| UnicodeWidthStr::width(l.trim_end()))
+                .unwrap_or(0);
+            let left_pad = if centered && kanji_w < inner_width {
+                (inner_width - kanji_w) / 2
+            } else {
+                0
+            };
+            let furi_w = UnicodeWidthStr::width(furi_line.as_str());
+            let right_pad = inner_width.saturating_sub(left_pad + furi_w);
+            let content = format!(
+                "{}{}{}",
+                " ".repeat(left_pad),
+                furi_line,
+                " ".repeat(right_pad)
+            );
+            let line = if border {
+                format!(
+                    "{}{}{}{}{}",
+                    border_color.apply_to("│"),
+                    " ".repeat(horizontal_padding),
+                    translation_style.apply_to(&content),
+                    " ".repeat(horizontal_padding),
+                    border_color.apply_to("│")
+                )
+            } else {
+                format!(
+                    "{}{}",
+                    " ".repeat(horizontal_padding),
+                    translation_style.apply_to(&content)
+                )
+            };
+            println!("{}", pad_to_center(&line, box_width, centered));
+        }
+        println!(
+            "{}",
+            pad_to_center(
+                &blank_line(inner_width, horizontal_padding, border, &border_color),
+                box_width,
+                centered
+            )
+        );
+    }
+
     // Japanese text
     print_block(
         &text_lines,
@@ -398,12 +448,8 @@ fn print_boxed(
         &border_color,
     );
 
-    // Furigana (readings below kanji)
-    // Cannot go through print_block: wrap() strips trailing spaces, then align_in_box()
-    // re-centers the shorter furigana string independently, shifting readings away from
-    // their kanji. Instead we compute the same left-margin the kanji line received and
-    // pre-apply it so that each reading lands directly under its kanji.
-    if !furigana_lines.is_empty() {
+    // Furigana below Japanese text
+    if !furigana_above && !furigana_lines.is_empty() {
         println!(
             "{}",
             pad_to_center(
@@ -634,6 +680,11 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
         }
     }
 
+    let furigana_above = matches!(
+        runtime.furigana_position,
+        crate::config::FuriganaPosition::Above
+    );
+
     let jap_style = if runtime.bold {
         color_from_hex(&runtime.quote_color).bold()
     } else {
@@ -731,6 +782,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
                 source_style.clone(),
                 runtime.centered,
                 furigana_lines.clone(),
+                furigana_above,
             );
 
             io::stdout().flush().unwrap();
@@ -768,6 +820,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
             source_style,
             runtime.centered,
             furigana_lines,
+            furigana_above,
         );
     }
 }

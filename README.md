@@ -132,6 +132,7 @@ Here you can customize:
 - `seed` - RNG seed for random quotes (`0` for random seed)
 - `centered` - center text (true/false)
 - `dynamic` - dynamic re-centering of the text (true/false)
+- `furigana_position` - show furigana `"above"` or `"below"` the Japanese text (default: `"below"`)
 
 Example `config.toml`:
 ```toml
@@ -221,6 +222,7 @@ You can see the built-in quotes in the [quotes folder](quotes/).
 kotofetch                                 # display a quote following the config
 kotofetch --translation furigana          # display furigana readings below kanji
 kotofetch --translation english,romaji    # display both English and romaji
+kotofetch --furigana-position above       # show furigana readings above the Japanese text
 kotofetch --horizontal-padding 3          # override specific config parameter temporarily
 kotofetch --modes anime,mycustomquotes    # display quotes from specific files
 ```
@@ -236,7 +238,7 @@ kotofetch --modes anime,mycustomquotes    # display quotes from specific files
 
 Multiple modes can be combined by passing a comma-separated list: `--translation english,romaji` or `--translation furigana,english`. Modes are displayed in the order given.
 
-Furigana displays readings centered below their kanji, supporting both single-kanji annotations (`知(し)`) and compound words (`大海(たいかい)`). Only quotes that include inline ruby markup in their `japanese` field will show furigana readings.
+Furigana displays readings aligned with their kanji, supporting both single-kanji annotations (`知(し)`) and compound words (`大海(たいかい)`). Only quotes that include inline ruby markup in their `japanese` field will show furigana readings. Use `--furigana-position above` (or `furigana_position = "above"` in config) to render readings above the Japanese text instead of below.
 
 
 ## Community Showcase

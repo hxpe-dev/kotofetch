@@ -17,6 +17,13 @@ pub enum TranslationMode {
     Furigana,
 }
 
+#[derive(Deserialize, Debug, Clone)]
+#[serde(rename_all = "lowercase")]
+pub enum FuriganaPosition {
+    Above,
+    Below,
+}
+
 // Accepts both the legacy single-string form (show_translation = "english") and the new array (show_translation = ["english", "romaji"])
 // The untagged enum tries `Many` first, a bare string fails to deserialize as a sequence, so serde falls back to `One`
 fn de_translation_modes<'de, D: Deserializer<'de>>(
@@ -54,6 +61,7 @@ pub struct DisplayConfig {
     pub seed: Option<u64>,
     pub centered: Option<bool>,
     pub dynamic: Option<bool>,
+    pub furigana_position: Option<FuriganaPosition>,
 }
 
 #[derive(Clone, Debug)]
@@ -74,6 +82,7 @@ pub struct RuntimeConfig {
     pub seed: u64,
     pub centered: bool,
     pub dynamic: bool,
+    pub furigana_position: FuriganaPosition,
 }
 
 impl Default for RuntimeConfig {
@@ -102,6 +111,7 @@ impl Default for RuntimeConfig {
             seed: 0, // 0 = random
             centered: true,
             dynamic: false,
+            furigana_position: FuriganaPosition::Below,
         }
     }
 }
@@ -189,6 +199,9 @@ pub fn make_runtime_config(user: Option<FileConfig>, cli: &crate::cli::Cli) -> R
             if let Some(dc) = d.dynamic {
                 r.dynamic = dc;
             }
+            if let Some(fp) = d.furigana_position {
+                r.furigana_position = fp;
+            }
         }
     }
 
@@ -250,6 +263,12 @@ pub fn make_runtime_config(user: Option<FileConfig>, cli: &crate::cli::Cli) -> R
     }
     if let Some(dc) = cli.dynamic {
         r.dynamic = dc;
+    }
+    if let Some(fp) = &cli.furigana_position {
+        r.furigana_position = match fp {
+            crate::cli::FuriganaPosition::Above => FuriganaPosition::Above,
+            crate::cli::FuriganaPosition::Below => FuriganaPosition::Below,
+        };
     }
 
     r
