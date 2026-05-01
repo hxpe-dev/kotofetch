@@ -2,18 +2,16 @@
 
 pkgs.rustPlatform.buildRustPackage rec {
   pname = "kotofetch";
-  version = "0.2.19";
+  version = "0.2.21";
 
   src = pkgs.fetchFromGitHub {
     owner = "hxpe-dev";
     repo = "kotofetch";
     rev = "v${version}";
-    sha256 = "sha256-owtwG1VvbR5aAbUlW/SL/bx1mfUGKq2JQMPy8b74Qlc=";
+    sha256 = "sha256-mll98MC/kB3BisC9teohlBDW6jgaOwMJRqsoGLjsSpA=";
   };
 
-  cargoLock = {
-    lockFile = ./Cargo.lock;
-  };
+  cargoHash = "sha256-nqTEAe7ODBg5SFxVdWW9AckT/y2YKZTAmlBtGqZ0ysE=";
 
   meta = with pkgs.lib; {
     description = "Minimalist fetch tool for Japanese quotes (written in Rust)";
