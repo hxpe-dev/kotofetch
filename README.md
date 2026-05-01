@@ -119,7 +119,7 @@ User configuration lives in:
 Here you can customize:
 - `horizontal_padding` / `vertical_padding` - spacing around quotes
 - `width` - max width for text wrapping (`0` for automatic width)
-- `show_translation` - translation mode (`"none"`, `"english"`, `"romaji"`, `"furigana"`)
+- `show_translation` - translation modes to display; accepts a single value (`"english"`) or an array (`["english", "romaji"]`); available values: `"none"`, `"english"`, `"romaji"`, `"furigana"`
 - `quote_color` - named ANSI colors (`"red"`, `"yellow"`, `"dim"`, etc.) or hex (`"#ffcc00"`)
 - `translation_color` - named ANSI colors (`"red"`, `"yellow"`, `"dim"`, etc.) or hex (`"#ffcc00"`)
 - `border_color` - named ANSI colors (`"red"`, `"yellow"`, `"dim"`, etc.) or hex (`"#ffcc00"`)
@@ -139,7 +139,7 @@ Example `config.toml`:
 horizontal_padding = 3
 vertical_padding = 1
 width = 50
-show_translation = "furigana"
+show_translation = ["furigana", "english"]
 quote_color = "#a3be8c"
 translation_color = "dim"
 border_color = "#be8ca3"
@@ -218,10 +218,11 @@ You can see the built-in quotes in the [quotes folder](quotes/).
 
 ## Usage
 ```bash
-kotofetch                               # display a quote following the config
-kotofetch --translation furigana        # display furigana readings below kanji
-kotofetch --horizontal-padding 3        # override specific config parameter temporarily
-kotofetch --modes anime,mycustomquotes  # display quotes from specific files
+kotofetch                                 # display a quote following the config
+kotofetch --translation furigana          # display furigana readings below kanji
+kotofetch --translation english,romaji    # display both English and romaji
+kotofetch --horizontal-padding 3          # override specific config parameter temporarily
+kotofetch --modes anime,mycustomquotes    # display quotes from specific files
 ```
 
 ### Translation Modes
@@ -232,6 +233,8 @@ kotofetch --modes anime,mycustomquotes  # display quotes from specific files
 | `english` | Shows English translation below Japanese |
 | `romaji` | Shows romaji (romanized Japanese) below Japanese |
 | `furigana` | Shows furigana readings below kanji (if available) |
+
+Multiple modes can be combined by passing a comma-separated list: `--translation english,romaji` or `--translation furigana,english`. Modes are displayed in the order given.
 
 Furigana displays readings centered below their kanji, supporting both single-kanji annotations (`知(し)`) and compound words (`大海(たいかい)`). Only quotes that include inline ruby markup in their `japanese` field will show furigana readings.
 
