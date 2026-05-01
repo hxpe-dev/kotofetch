@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.2.20
+
+### Added
+- Multiple translations display
+- New furigana position option
+- New quotes
+
+### Fixed
+- Quotes translations issues 
+
+
 ## v0.2.19
 
 ### Added
