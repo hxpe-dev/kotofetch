@@ -43,7 +43,6 @@ PUSHED=false
 TAGGED=false
 TAG_PUSHED=false
 AUR_COMMITTED=false
-NIX_UPDATED=false
 TAG=""
 NEW_VERSION=""
 
@@ -78,10 +77,6 @@ rollback() {
     if [[ "$COMMITTED" == true && "$PUSHED" == false ]]; then
         git reset --soft HEAD~1
         warn "Reverted unpushed version bump commit"
-    fi
-
-    if [[ "$NIX_UPDATED" == true ]]; then
-        git checkout -- default.nix 2>/dev/null && warn "Reverted default.nix"
     fi
 
     if [[ "$CARGO_UPDATED" == true ]]; then
@@ -277,40 +272,41 @@ PYEOF
 fi
 
 # ---------------------------------------------------------------------------
-# 8. Nix update
+# 8. Nix update (manual)
 # ---------------------------------------------------------------------------
-step "Nix update"
+step "Nix update (manual)"
 
-mkdir -p "$NIX_TEST_DIR"
-NIX_UPDATED=true
-sed -i "s/version = \".*\"/version = \"$NEW_VERSION\"/" "$KOTOFETCH_DIR/default.nix"
-cp "$KOTOFETCH_DIR/default.nix" "$NIX_TEST_DIR/default.nix"
-cp "$KOTOFETCH_DIR/Cargo.lock" "$NIX_TEST_DIR/Cargo.lock"
-
-echo "    Running nix-build to get the correct sha256 (first run will fail)..."
-NEW_SHA=$(nix-build "$NIX_TEST_DIR/default.nix" 2>&1 | grep -oP '(?<=got:\s{1,20})sha256-[a-zA-Z0-9+/=]+' | head -1 || true)
-
-if [[ -z "$NEW_SHA" ]]; then
-    warn "Could not auto-extract sha256 from nix-build output."
-    echo "    Run: nix-build $NIX_TEST_DIR/default.nix"
-    echo "    Copy the 'got:' sha256 value, then edit default.nix manually."
-    pause "Once default.nix is updated"
-else
-    sed -i "s|sha256 = \"sha256-.*\"|sha256 = \"$NEW_SHA\"|" "$KOTOFETCH_DIR/default.nix"
-    ok "Updated sha256 in default.nix: $NEW_SHA"
-
-    cp "$KOTOFETCH_DIR/default.nix" "$NIX_TEST_DIR/default.nix"
-    cp "$KOTOFETCH_DIR/Cargo.lock" "$NIX_TEST_DIR/Cargo.lock"
-    echo "    Verifying nix build with new sha256..."
-    nix-build "$NIX_TEST_DIR/default.nix"
-    ok "Nix build verified"
-fi
-
-cd "$KOTOFETCH_DIR"
-git add default.nix
-git diff --cached --quiet || git commit -m "chore: nix bump to $TAG"
-git push
-ok "default.nix committed and pushed"
+echo ""
+echo -e "    Update ${BOLD}default.nix${NC} manually following these steps:"
+echo ""
+echo -e "    ${BOLD}1. Copy default.nix to a temp directory and work from there:${NC}"
+echo -e "       cp $KOTOFETCH_DIR/default.nix ~/nix-test/default.nix"
+echo -e "       cd ~/nix-test"
+echo ""
+echo -e "    ${BOLD}2. Bump the version and empty both hashes in default.nix:${NC}"
+echo -e "       version = \"$NEW_VERSION\""
+echo -e "       sha256 = \"\""
+echo -e "       cargoHash = \"\""
+echo ""
+echo -e "    ${BOLD}3. Run nix-build — it will fail with the correct source hash:${NC}"
+echo -e "       nix-build default.nix"
+echo -e "       Copy the ${YELLOW}got: sha256-...${NC} value and paste it into sha256."
+echo ""
+echo -e "    ${BOLD}4. Run nix-build again — it will fail with the correct cargo hash:${NC}"
+echo -e "       nix-build default.nix"
+echo -e "       Copy the ${YELLOW}got: sha256-...${NC} value and paste it into cargoHash."
+echo ""
+echo -e "    ${BOLD}5. Run nix-build a final time to verify both hashes are correct:${NC}"
+echo -e "       nix-build default.nix"
+echo ""
+echo -e "    ${BOLD}6. Copy the updated default.nix back and commit:${NC}"
+echo -e "       cp ~/nix-test/default.nix $KOTOFETCH_DIR/default.nix"
+echo -e "       cd $KOTOFETCH_DIR"
+echo -e "       git add default.nix"
+echo -e "       git commit -m \"chore: nix bump to $TAG\""
+echo -e "       git push"
+echo ""
+pause "Once default.nix is updated, committed, and pushed"
 
 # ---------------------------------------------------------------------------
 echo -e "\n${BOLD}${GREEN}Release $TAG complete.${NC}"
