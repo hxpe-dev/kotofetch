@@ -1,5 +1,5 @@
 use dirs::config_dir;
-use serde::Deserialize;
+use serde::{Deserialize, Deserializer};
 use std::fs;
 use std::path::PathBuf;
 
@@ -18,11 +18,37 @@ pub enum TranslationMode {
 }
 
 #[derive(Deserialize, Debug, Clone)]
+#[serde(rename_all = "lowercase")]
+pub enum FuriganaPosition {
+    Above,
+    Below,
+}
+
+// Accepts both the legacy single-string form (show_translation = "english") and the new array (show_translation = ["english", "romaji"])
+// The untagged enum tries `Many` first, a bare string fails to deserialize as a sequence, so serde falls back to `One`
+fn de_translation_modes<'de, D: Deserializer<'de>>(
+    deserializer: D,
+) -> Result<Option<Vec<TranslationMode>>, D::Error> {
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum OneOrMany {
+        Many(Vec<TranslationMode>),
+        One(TranslationMode),
+    }
+
+    Ok(Some(match OneOrMany::deserialize(deserializer)? {
+        OneOrMany::Many(v) => v,
+        OneOrMany::One(m) => vec![m],
+    }))
+}
+
+#[derive(Deserialize, Debug, Clone)]
 pub struct DisplayConfig {
     pub horizontal_padding: Option<usize>,
     pub vertical_padding: Option<usize>,
     pub width: Option<usize>,
-    pub show_translation: Option<TranslationMode>,
+    #[serde(default, deserialize_with = "de_translation_modes")]
+    pub show_translation: Option<Vec<TranslationMode>>,
     pub translation_color: Option<String>,
     pub quote_color: Option<String>,
     pub font_size: Option<String>,
@@ -35,6 +61,7 @@ pub struct DisplayConfig {
     pub seed: Option<u64>,
     pub centered: Option<bool>,
     pub dynamic: Option<bool>,
+    pub furigana_position: Option<FuriganaPosition>,
 }
 
 #[derive(Clone, Debug)]
@@ -42,7 +69,7 @@ pub struct RuntimeConfig {
     pub horizontal_padding: usize,
     pub vertical_padding: usize,
     pub width: usize,
-    pub show_translation: TranslationMode,
+    pub show_translation: Vec<TranslationMode>,
     pub translation_color: String,
     pub quote_color: String,
     pub font_size: String,
@@ -55,6 +82,7 @@ pub struct RuntimeConfig {
     pub seed: u64,
     pub centered: bool,
     pub dynamic: bool,
+    pub furigana_position: FuriganaPosition,
 }
 
 impl Default for RuntimeConfig {
@@ -63,7 +91,7 @@ impl Default for RuntimeConfig {
             horizontal_padding: 3,
             vertical_padding: 1,
             width: 0, // 0 = automatic
-            show_translation: TranslationMode::English,
+            show_translation: vec![TranslationMode::English],
             translation_color: "dim".to_string(),
             quote_color: "white".to_string(),
             border_color: "white".to_string(),
@@ -83,6 +111,7 @@ impl Default for RuntimeConfig {
             seed: 0, // 0 = random
             centered: true,
             dynamic: false,
+            furigana_position: FuriganaPosition::Below,
         }
     }
 }
@@ -170,6 +199,9 @@ pub fn make_runtime_config(user: Option<FileConfig>, cli: &crate::cli::Cli) -> R
             if let Some(dc) = d.dynamic {
                 r.dynamic = dc;
             }
+            if let Some(fp) = d.furigana_position {
+                r.furigana_position = fp;
+            }
         }
     }
 
@@ -185,13 +217,16 @@ pub fn make_runtime_config(user: Option<FileConfig>, cli: &crate::cli::Cli) -> R
     }
 
     // map CLI TranslationMode -> config::TranslationMode
-    if let Some(tmode) = &cli.translation {
-        r.show_translation = match tmode {
-            crate::cli::TranslationMode::None => TranslationMode::None,
-            crate::cli::TranslationMode::English => TranslationMode::English,
-            crate::cli::TranslationMode::Romaji => TranslationMode::Romaji,
-            crate::cli::TranslationMode::Furigana => TranslationMode::Furigana,
-        };
+    if let Some(tmodes) = &cli.translation {
+        r.show_translation = tmodes
+            .iter()
+            .map(|tmode| match tmode {
+                crate::cli::TranslationMode::None => TranslationMode::None,
+                crate::cli::TranslationMode::English => TranslationMode::English,
+                crate::cli::TranslationMode::Romaji => TranslationMode::Romaji,
+                crate::cli::TranslationMode::Furigana => TranslationMode::Furigana,
+            })
+            .collect();
     }
 
     if let Some(tc) = &cli.translation_color {
@@ -228,6 +263,12 @@ pub fn make_runtime_config(user: Option<FileConfig>, cli: &crate::cli::Cli) -> R
     }
     if let Some(dc) = cli.dynamic {
         r.dynamic = dc;
+    }
+    if let Some(fp) = &cli.furigana_position {
+        r.furigana_position = match fp {
+            crate::cli::FuriganaPosition::Above => FuriganaPosition::Above,
+            crate::cli::FuriganaPosition::Below => FuriganaPosition::Below,
+        };
     }
 
     r
