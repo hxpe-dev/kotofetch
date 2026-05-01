@@ -153,6 +153,7 @@ modes = ["proverb", "anime"]
 seed = 0
 centered = true
 dynamic = false
+furigana_position = "above"
 ```
 
 ### Importing Anki decks
@@ -279,7 +280,7 @@ cd kotofetch
 ```
 3. **Create a branch** for your changes:
 ```bash
-git checkout -b feature/my-feature
+git checkout -b feat/my-feature
 ```
 
 4. **Make changes** and **commit**:
@@ -290,7 +291,7 @@ git commit -m "Add my feature"
 
 5. **Push** your branch:
 ```bash
-git push origin feature/my-feature
+git push origin feat/my-feature
 ```
 
 6. **Open a Pull Request** on GitHub!
