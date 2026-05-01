@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.2.20
+## v0.2.21
 
 ### Added
 - Multiple translations display
