@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
+# WARNING & DISCLAIMER
+# THIS FILE WAS FULLY WRITTEN BY CLAUDE TO AUTOMATE THE RELEASE PROCESS OF NEW VERSIONS
+
 # ---------------------------------------------------------------------------
 # Configuration — adjust paths if needed
 # ---------------------------------------------------------------------------
@@ -123,6 +126,46 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
     warn "There are uncommitted changes."
     confirm "Continue anyway?" || exit 1
 fi
+
+# Required tools
+for cmd in cargo curl python3 sha256sum; do
+    command -v "$cmd" &>/dev/null || die "Required tool not found: $cmd"
+done
+ok "Required tools (cargo, curl, python3, sha256sum)"
+
+# GitHub SSH
+ssh_exit=0
+SSH_OUT=$(ssh -T git@github.com -o BatchMode=yes -o ConnectTimeout=5 2>&1) || ssh_exit=$?
+if [[ $ssh_exit -eq 255 ]] || echo "$SSH_OUT" | grep -qi "permission denied"; then
+    die "GitHub SSH auth failed — check your key (ssh -T git@github.com)"
+fi
+ok "GitHub SSH access"
+
+# AUR directory and SSH
+if [[ -d "$AUR_DIR" ]]; then
+    command -v makepkg &>/dev/null || die "makepkg not found (needed for AUR step)"
+    [[ -f "$AUR_DIR/PKGBUILD" ]] || die "$AUR_DIR/PKGBUILD not found"
+    git -C "$AUR_DIR" rev-parse --git-dir &>/dev/null || die "$AUR_DIR is not a git repository"
+    AUR_REMOTE=$(git -C "$AUR_DIR" remote get-url aur 2>/dev/null) || die "$AUR_DIR has no 'aur' remote (check: git -C \"$AUR_DIR\" remote -v)"
+    echo "$AUR_REMOTE" | grep -q "aur.archlinux.org" || warn "AUR remote URL ($AUR_REMOTE) doesn't look like an AUR URL"
+    if ! git -C "$AUR_DIR" diff --quiet || ! git -C "$AUR_DIR" diff --cached --quiet; then
+        warn "AUR directory has uncommitted changes."
+        confirm "Continue anyway?" || exit 1
+    fi
+    ok "AUR directory ($AUR_DIR)"
+
+    ssh_exit=0
+    SSH_OUT=$(ssh -T aur@aur.archlinux.org -o BatchMode=yes -o ConnectTimeout=5 2>&1) || ssh_exit=$?
+    if [[ $ssh_exit -eq 255 ]] || echo "$SSH_OUT" | grep -qi "permission denied"; then
+        die "AUR SSH auth failed — check your key (ssh -T aur@aur.archlinux.org)"
+    fi
+    ok "AUR SSH access"
+else
+    warn "AUR directory not found at $AUR_DIR — AUR step will be skipped"
+fi
+
+# Optional tools
+command -v nix-build &>/dev/null || warn "nix-build not found — Nix step will fail"
 
 if git rev-parse "$TAG" &>/dev/null; then
     die "Local tag $TAG already exists — delete it first: git tag -d $TAG"
