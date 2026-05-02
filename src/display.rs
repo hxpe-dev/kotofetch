@@ -1014,30 +1014,6 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
 
     let animated = runtime.animation != AnimationType::None && Term::stdout().is_term();
 
-    if animated {
-        play_animation(
-            &runtime.animation,
-            runtime.animation_duration_ms,
-            seed,
-            &jap_lines,
-            &furigana_lines,
-            &translations,
-            quote.source.as_deref(),
-            show_source,
-            jap_style.clone(),
-            translation_style.clone(),
-            source_style.clone(),
-            runtime.horizontal_padding,
-            runtime.vertical_padding,
-            runtime.width,
-            runtime.border,
-            runtime.rounded_border,
-            border_color.clone(),
-            runtime.centered,
-            furigana_above,
-        );
-    }
-
     if runtime.dynamic {
         // Dynamic recentering mode
         let running = Arc::new(AtomicBool::new(true));
@@ -1054,6 +1030,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
         io::stdout().flush().unwrap();
 
         let mut last_size = term_size::dimensions();
+        let mut first_iter = true;
 
         while running.load(Ordering::SeqCst) {
             clear_screen();
@@ -1090,26 +1067,54 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
                 println!();
             }
 
-            // Render centered block
-            print_boxed(
-                jap_lines.clone(),
-                jap_style.clone(),
-                horizontal,
-                vertical,
-                runtime.width,
-                runtime.border,
-                runtime.rounded_border,
-                border_color.clone(),
-                &translations,
-                translation_style.clone(),
-                quote.source.as_deref(),
-                show_source,
-                source_style.clone(),
-                runtime.centered,
-                furigana_lines.clone(),
-                furigana_above,
-            );
+            if animated && first_iter {
+                play_animation(
+                    &runtime.animation,
+                    runtime.animation_duration_ms,
+                    seed,
+                    &jap_lines,
+                    &furigana_lines,
+                    &translations,
+                    quote.source.as_deref(),
+                    show_source,
+                    jap_style.clone(),
+                    translation_style.clone(),
+                    source_style.clone(),
+                    horizontal,
+                    vertical,
+                    runtime.width,
+                    runtime.border,
+                    runtime.rounded_border,
+                    border_color.clone(),
+                    runtime.centered,
+                    furigana_above,
+                );
+                // CursorGuard inside play_animation restores the cursor on drop, re-hide for dynamic mode
+                print!("\x1B[?25l");
+                io::stdout().flush().unwrap();
+            } else {
+                // Render centered block
+                print_boxed(
+                    jap_lines.clone(),
+                    jap_style.clone(),
+                    horizontal,
+                    vertical,
+                    runtime.width,
+                    runtime.border,
+                    runtime.rounded_border,
+                    border_color.clone(),
+                    &translations,
+                    translation_style.clone(),
+                    quote.source.as_deref(),
+                    show_source,
+                    source_style.clone(),
+                    runtime.centered,
+                    furigana_lines.clone(),
+                    furigana_above,
+                );
+            }
 
+            first_iter = false;
             io::stdout().flush().unwrap();
 
             // Sleep before checking for resize or exit
@@ -1127,7 +1132,29 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
         io::stdout().flush().unwrap();
 
         clear_screen(); // clean terminal on exit
-    } else if !animated {
+    } else if animated {
+        play_animation(
+            &runtime.animation,
+            runtime.animation_duration_ms,
+            seed,
+            &jap_lines,
+            &furigana_lines,
+            &translations,
+            quote.source.as_deref(),
+            show_source,
+            jap_style.clone(),
+            translation_style.clone(),
+            source_style.clone(),
+            runtime.horizontal_padding,
+            runtime.vertical_padding,
+            runtime.width,
+            runtime.border,
+            runtime.rounded_border,
+            border_color.clone(),
+            runtime.centered,
+            furigana_above,
+        );
+    } else {
         // Normal static render
         print_boxed(
             jap_lines,
