@@ -1,8 +1,9 @@
+use crate::config::AnimationType;
 use crate::config::RuntimeConfig;
 use crate::quotes::BUILTIN_QUOTES;
 use crate::quotes::Quote;
 use crate::quotes::QuotesFile;
-use console::{Color, Style};
+use console::{Color, Style, Term};
 use rand::prelude::*;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -586,6 +587,312 @@ fn clear_screen() {
     let _ = io::stdout().flush();
 }
 
+fn box_height(
+    text_lines: &[String],
+    translations: &[&str],
+    furigana_lines: &[String],
+    show_source: bool,
+    vertical_padding: usize,
+    border: bool,
+    _furigana_above: bool,
+) -> usize {
+    let mut n = text_lines.len();
+    if !furigana_lines.is_empty() {
+        n += furigana_lines.len() + 1; // blank separator between japanese and furigana
+    }
+    n += translations.len() * 2; // spacer + content per translation
+    if show_source {
+        n += 2; // spacer + content line
+    }
+    n += vertical_padding * 2;
+    if border {
+        n += 2; // top and bottom border
+    }
+    n
+}
+
+struct CursorGuard;
+
+impl CursorGuard {
+    fn new() -> Self {
+        print!("\x1B[?25l");
+        let _ = io::stdout().flush();
+        CursorGuard
+    }
+}
+
+impl Drop for CursorGuard {
+    fn drop(&mut self) {
+        print!("\x1B[?25h");
+        let _ = io::stdout().flush();
+    }
+}
+
+// Collect all visible (non-newline) chars from lines in reading order, recording (line, byte_offset, char, width).
+fn collect_chars(lines: &[String]) -> Vec<(usize, usize, char, usize)> {
+    let mut out = Vec::new();
+    for (li, line) in lines.iter().enumerate() {
+        for (bi, c) in line.char_indices() {
+            if c != '\n' {
+                out.push((li, bi, c, c.width().unwrap_or(1)));
+            }
+        }
+    }
+    out
+}
+
+fn anim_typewriter(real: &[String], reveal: usize) -> Vec<String> {
+    let mut remaining = reveal;
+    real.iter()
+        .map(|line| {
+            let total_w = UnicodeWidthStr::width(line.as_str());
+            let chars: Vec<char> = line.chars().collect();
+            let to_show = remaining.min(chars.len());
+            remaining = remaining.saturating_sub(chars.len());
+            let visible: String = chars[..to_show].iter().collect();
+            let shown_w: usize = visible.chars().map(|c| c.width().unwrap_or(1)).sum();
+            format!("{}{}", visible, " ".repeat(total_w.saturating_sub(shown_w)))
+        })
+        .collect()
+}
+
+fn anim_slide(real: &[String], frame: usize, total_frames: usize) -> Vec<String> {
+    real.iter()
+        .map(|line| {
+            let w = UnicodeWidthStr::width(line.as_str());
+            let offset = w.saturating_sub(w * frame / total_frames.max(1));
+            if offset == 0 {
+                line.clone()
+            } else {
+                // take the last (w - offset) chars and pad left with spaces
+                let chars: Vec<char> = line.chars().collect();
+                let visible_chars = chars.len().saturating_sub(offset);
+                let visible: String = chars[chars.len() - visible_chars..].iter().collect();
+                let visible_w = UnicodeWidthStr::width(visible.as_str());
+                format!("{}{}", " ".repeat(w.saturating_sub(visible_w)), visible)
+            }
+        })
+        .collect()
+}
+
+// global_offset: position of the first char of `real` in the combined jap+trans sequence
+// n_total: total chars across all animated text
+// pool: replacement chars (kana for jpanese, ASCII for translations)
+fn anim_scramble_lines(
+    real: &[String],
+    global_offset: usize,
+    n_total: usize,
+    frame: usize,
+    total_frames: usize,
+    rng: &mut StdRng,
+    pool: &[char],
+) -> Vec<String> {
+    const SCRAMBLE_STEPS: usize = 6;
+    let chars = collect_chars(real);
+    if chars.is_empty() || pool.is_empty() {
+        return real.to_vec();
+    }
+    let n_total = n_total.max(1);
+
+    let mut per_line: Vec<Vec<Option<char>>> =
+        real.iter().map(|l| l.chars().map(Some).collect()).collect();
+
+    for (k, (li, _, real_c, _)) in chars.iter().enumerate() {
+        let global_k = global_offset + k;
+        let settle_frame = total_frames.saturating_sub(SCRAMBLE_STEPS) * global_k / n_total;
+        let char_frame = if real_c.is_whitespace() {
+            *real_c
+        } else if frame < settle_frame + SCRAMBLE_STEPS {
+            pool[rng.random_range(0..pool.len())]
+        } else {
+            *real_c
+        };
+        let pos_in_line = chars[..k].iter().filter(|(l2, _, _, _)| *l2 == *li).count();
+        if let Some(slot) = per_line[*li].get_mut(pos_in_line) {
+            *slot = Some(char_frame);
+        }
+    }
+
+    per_line
+        .iter()
+        .zip(real.iter())
+        .map(|(scrambled, orig)| {
+            let s: String = scrambled.iter().filter_map(|c| *c).collect();
+            let w = UnicodeWidthStr::width(orig.as_str());
+            let sw = UnicodeWidthStr::width(s.as_str());
+            if sw < w {
+                format!("{}{}", s, " ".repeat(w - sw))
+            } else {
+                s
+            }
+        })
+        .collect()
+}
+
+fn play_animation(
+    animation: &AnimationType,
+    duration_ms: u64,
+    seed: u64,
+    real_jap_lines: &[String],
+    real_furigana_lines: &[String],
+    real_translations: &[&str],
+    real_source: Option<&str>,
+    show_source: bool,
+    jap_style: Style,
+    translation_style: Style,
+    source_style: Style,
+    horizontal_padding: usize,
+    vertical_padding: usize,
+    width: usize,
+    border: bool,
+    rounded_border: bool,
+    border_color: Style,
+    centered: bool,
+    furigana_above: bool,
+) {
+    let height = box_height(
+        real_jap_lines,
+        real_translations,
+        real_furigana_lines,
+        show_source,
+        vertical_padding,
+        border,
+        furigana_above,
+    );
+
+    let n_furi_chars: usize = real_furigana_lines.iter().map(|l| l.chars().count()).sum();
+    let blank_source_owned: String = real_source
+        .map(|s| " ".repeat(UnicodeWidthStr::width(s)))
+        .unwrap_or_default();
+    let blank_source: Option<&str> = real_source.map(|_| blank_source_owned.as_str());
+
+    let n_jap_chars: usize = real_jap_lines.iter().map(|l| l.chars().count()).sum();
+    let n_trans_chars: usize = real_translations.iter().map(|t| t.chars().count()).sum();
+    let n_total = (n_jap_chars + n_trans_chars).max(1);
+
+    let frame_count: usize = match animation {
+        AnimationType::None => 0,
+        AnimationType::Typewriter => n_total,
+        AnimationType::Scramble => 40,
+        AnimationType::Slide => 30,
+    };
+
+    let frame_delay_ms = if frame_count == 0 {
+        0
+    } else {
+        (duration_ms / frame_count as u64).clamp(16, 200)
+    };
+
+    let trans_strings: Vec<String> = real_translations.iter().map(|&s| s.to_string()).collect();
+
+    let jap_pool: Vec<char> = (0x3041u32..=0x3096)
+        .chain(0x30A1..=0x30F6)
+        .filter_map(char::from_u32)
+        .collect();
+    let ascii_pool: Vec<char> = (b'a'..=b'z')
+        .chain(b'A'..=b'Z')
+        .chain(b'0'..=b'9')
+        .map(|b| b as char)
+        .collect();
+
+    let mut rng = StdRng::seed_from_u64(seed);
+
+    let _guard = CursorGuard::new();
+
+    for i in 0..=frame_count {
+        let is_final = i == frame_count;
+        let n_jap_reveal = i.min(n_jap_chars);
+        let n_trans_reveal = i.saturating_sub(n_jap_chars);
+
+        let frame_jap = match animation {
+            AnimationType::None => real_jap_lines.to_vec(),
+            AnimationType::Typewriter => anim_typewriter(real_jap_lines, n_jap_reveal),
+            AnimationType::Slide => anim_slide(real_jap_lines, i, frame_count),
+            AnimationType::Scramble => anim_scramble_lines(
+                real_jap_lines,
+                0,
+                n_total,
+                i,
+                frame_count,
+                &mut rng,
+                &jap_pool,
+            ),
+        };
+
+        let frame_trans_owned: Vec<String> = if is_final {
+            trans_strings.clone()
+        } else {
+            match animation {
+                AnimationType::None => trans_strings.clone(),
+                AnimationType::Typewriter => anim_typewriter(&trans_strings, n_trans_reveal),
+                AnimationType::Slide => anim_slide(&trans_strings, i, frame_count),
+                AnimationType::Scramble => anim_scramble_lines(
+                    &trans_strings,
+                    n_jap_chars,
+                    n_total,
+                    i,
+                    frame_count,
+                    &mut rng,
+                    &ascii_pool,
+                ),
+            }
+        };
+        let frame_trans_refs: Vec<&str> = frame_trans_owned.iter().map(|s| s.as_str()).collect();
+
+        let furi: Vec<String> = if real_furigana_lines.is_empty() || is_final {
+            real_furigana_lines.to_vec()
+        } else {
+            match animation {
+                AnimationType::Typewriter => {
+                    let reveal = n_furi_chars * n_jap_reveal / n_jap_chars.max(1);
+                    anim_typewriter(real_furigana_lines, reveal)
+                }
+                AnimationType::Slide => anim_slide(real_furigana_lines, i, frame_count),
+                AnimationType::Scramble => anim_scramble_lines(
+                    real_furigana_lines,
+                    0,
+                    n_furi_chars.max(1),
+                    i,
+                    frame_count,
+                    &mut rng,
+                    &jap_pool,
+                ),
+                AnimationType::None => real_furigana_lines.to_vec(),
+            }
+        };
+        let src = if is_final { real_source } else { blank_source };
+
+        if i > 0 {
+            print!("\x1B[{}A", height);
+        }
+
+        print_boxed(
+            frame_jap,
+            jap_style.clone(),
+            horizontal_padding,
+            vertical_padding,
+            width,
+            border,
+            rounded_border,
+            border_color.clone(),
+            &frame_trans_refs,
+            translation_style.clone(),
+            src,
+            show_source,
+            source_style.clone(),
+            centered,
+            furi,
+            furigana_above,
+        );
+
+        let _ = io::stdout().flush();
+
+        if i < frame_count {
+            thread::sleep(Duration::from_millis(frame_delay_ms));
+        }
+    }
+}
+
 pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
     // seed
     let seed = if runtime.seed == 0 {
@@ -705,6 +1012,32 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
         (lines, vec![])
     };
 
+    let animated = runtime.animation != AnimationType::None && Term::stdout().is_term();
+
+    if animated {
+        play_animation(
+            &runtime.animation,
+            runtime.animation_duration_ms,
+            seed,
+            &jap_lines,
+            &furigana_lines,
+            &translations,
+            quote.source.as_deref(),
+            show_source,
+            jap_style.clone(),
+            translation_style.clone(),
+            source_style.clone(),
+            runtime.horizontal_padding,
+            runtime.vertical_padding,
+            runtime.width,
+            runtime.border,
+            runtime.rounded_border,
+            border_color.clone(),
+            runtime.centered,
+            furigana_above,
+        );
+    }
+
     if runtime.dynamic {
         // Dynamic recentering mode
         let running = Arc::new(AtomicBool::new(true));
@@ -735,23 +1068,15 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
                 horizontal = runtime.horizontal_padding;
             }
 
-            // estimate how many lines the box will take (content + borders + padding)
-            let content_lines = {
-                let mut count = jap_lines.len();
-                if !furigana_lines.is_empty() {
-                    count += furigana_lines.len() + 1; // +1 for blank line between
-                }
-                count += translations.len() * 2;
-                if show_source {
-                    count += 1;
-                }
-                // Add vertical padding and border lines
-                count += vertical * 2;
-                if runtime.border {
-                    count += 2;
-                }
-                count
-            };
+            let content_lines = box_height(
+                &jap_lines,
+                &translations,
+                &furigana_lines,
+                show_source,
+                vertical,
+                runtime.border,
+                furigana_above,
+            );
 
             // Compute top blank lines to center vertically
             let top_blank = if term_h > content_lines {
@@ -802,7 +1127,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
         io::stdout().flush().unwrap();
 
         clear_screen(); // clean terminal on exit
-    } else {
+    } else if !animated {
         // Normal static render
         print_boxed(
             jap_lines,
