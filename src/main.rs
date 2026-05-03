@@ -5,7 +5,9 @@ mod display;
 mod quotes;
 
 use crate::cli::{Cli, Commands, InitSource};
-use clap::Parser;
+use clap::{CommandFactory, Parser};
+use clap_complete::generate;
+use std::io;
 
 fn main() {
     let cli = Cli::parse();
@@ -18,6 +20,11 @@ fn main() {
                 eprintln!("Error: {e}");
                 std::process::exit(1);
             }
+        }
+        Some(Commands::Completion { shell }) => {
+            let mut cmd = Cli::command();
+            let cmdname = cmd.get_name().to_string();
+            generate(*shell, &mut cmd, cmdname, &mut io::stdout());
         }
         None => {
             let user_cfg = config::load_user_config(cli.config.clone());

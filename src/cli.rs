@@ -1,4 +1,5 @@
 use clap::{Args, Parser, Subcommand, ValueEnum};
+use clap_complete::Shell;
 use std::path::PathBuf;
 
 #[derive(Parser, Debug)]
@@ -86,6 +87,11 @@ pub enum Commands {
     Init {
         #[command(subcommand)]
         source: InitSource,
+    },
+    /// Output the completion script
+    Completion {
+        /// Select the shell
+        shell: Shell,
     },
 }
 
