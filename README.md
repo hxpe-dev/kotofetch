@@ -18,6 +18,7 @@
   - [Custom quotes](#custom-quotes)
 - [Usage](#usage)
   - [Translation Modes](#translation-modes)
+- [Autocompletion](#autocompletion)
 - [Community Showcase](#community-showcase)
 - [Contributing](#contributing)
 
@@ -241,6 +242,15 @@ Multiple modes can be combined by passing a comma-separated list: `--translation
 
 Furigana displays readings aligned with their kanji, supporting both single-kanji annotations (`知(し)`) and compound words (`大海(たいかい)`). Only quotes that include inline ruby markup in their `japanese` field will show furigana readings. Use `--furigana-position above` (or `furigana_position = "above"` in config) to render readings above the Japanese text instead of below.
 
+## Autocompletion
+
+You can get the script by running this command:
+```bash
+kotofetch completion <SHELL>
+```
+The setup depends on the specific shell.
+
+The supported shells are those supported by the currently used `clap_complete` version.
 
 ## Community Showcase
 
