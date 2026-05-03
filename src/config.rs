@@ -24,6 +24,15 @@ pub enum FuriganaPosition {
     Below,
 }
 
+#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum AnimationType {
+    None,
+    Typewriter,
+    Scramble,
+    Slide,
+}
+
 // Accepts both the legacy single-string form (show_translation = "english") and the new array (show_translation = ["english", "romaji"])
 // The untagged enum tries `Many` first, a bare string fails to deserialize as a sequence, so serde falls back to `One`
 fn de_translation_modes<'de, D: Deserializer<'de>>(
@@ -62,6 +71,8 @@ pub struct DisplayConfig {
     pub centered: Option<bool>,
     pub dynamic: Option<bool>,
     pub furigana_position: Option<FuriganaPosition>,
+    pub animation: Option<AnimationType>,
+    pub animation_duration_ms: Option<u64>,
 }
 
 #[derive(Clone, Debug)]
@@ -83,6 +94,8 @@ pub struct RuntimeConfig {
     pub centered: bool,
     pub dynamic: bool,
     pub furigana_position: FuriganaPosition,
+    pub animation: AnimationType,
+    pub animation_duration_ms: u64,
 }
 
 impl Default for RuntimeConfig {
@@ -112,6 +125,8 @@ impl Default for RuntimeConfig {
             centered: true,
             dynamic: false,
             furigana_position: FuriganaPosition::Below,
+            animation: AnimationType::None,
+            animation_duration_ms: 1000,
         }
     }
 }
@@ -202,6 +217,12 @@ pub fn make_runtime_config(user: Option<FileConfig>, cli: &crate::cli::Cli) -> R
             if let Some(fp) = d.furigana_position {
                 r.furigana_position = fp;
             }
+            if let Some(a) = d.animation {
+                r.animation = a;
+            }
+            if let Some(d_ms) = d.animation_duration_ms {
+                r.animation_duration_ms = d_ms;
+            }
         }
     }
 
@@ -269,6 +290,17 @@ pub fn make_runtime_config(user: Option<FileConfig>, cli: &crate::cli::Cli) -> R
             crate::cli::FuriganaPosition::Above => FuriganaPosition::Above,
             crate::cli::FuriganaPosition::Below => FuriganaPosition::Below,
         };
+    }
+    if let Some(a) = &cli.animation {
+        r.animation = match a {
+            crate::cli::AnimationType::None => AnimationType::None,
+            crate::cli::AnimationType::Typewriter => AnimationType::Typewriter,
+            crate::cli::AnimationType::Scramble => AnimationType::Scramble,
+            crate::cli::AnimationType::Slide => AnimationType::Slide,
+        };
+    }
+    if let Some(d_ms) = cli.animation_duration_ms {
+        r.animation_duration_ms = d_ms;
     }
 
     r

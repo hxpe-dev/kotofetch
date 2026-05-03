@@ -18,6 +18,7 @@
   - [Custom quotes](#custom-quotes)
 - [Usage](#usage)
   - [Translation Modes](#translation-modes)
+  - [Animations](#animations)
 - [Autocompletion](#autocompletion)
 - [Community Showcase](#community-showcase)
 - [Contributing](#contributing)
@@ -134,6 +135,8 @@ Here you can customize:
 - `centered` - center text (true/false)
 - `dynamic` - dynamic re-centering of the text (true/false)
 - `furigana_position` - show furigana `"above"` or `"below"` the Japanese text (default: `"below"`)
+- `animation` - animated reveal on startup: `"none"` (default), `"typewriter"`, `"scramble"`, `"slide"`
+- `animation_duration_ms` - total duration of the animation in milliseconds (default: `1000`)
 
 Example `config.toml`:
 ```toml
@@ -155,6 +158,8 @@ seed = 0
 centered = true
 dynamic = false
 furigana_position = "above"
+animation = "scramble"
+animation_duration_ms = 1500
 ```
 
 ### Importing Anki decks
@@ -221,12 +226,14 @@ You can see the built-in quotes in the [quotes folder](quotes/).
 
 ## Usage
 ```bash
-kotofetch                                 # display a quote following the config
-kotofetch --translation furigana          # display furigana readings below kanji
-kotofetch --translation english,romaji    # display both English and romaji
-kotofetch --furigana-position above       # show furigana readings above the Japanese text
-kotofetch --horizontal-padding 3          # override specific config parameter temporarily
-kotofetch --modes anime,mycustomquotes    # display quotes from specific files
+kotofetch                                                   # display a quote following the config
+kotofetch --translation furigana                            # display furigana readings below kanji
+kotofetch --translation english,romaji                      # display both English and romaji
+kotofetch --furigana-position above                         # show furigana readings above the Japanese text
+kotofetch --horizontal-padding 3                            # override specific config parameter temporarily
+kotofetch --modes anime,mycustomquotes                      # display quotes from specific files
+kotofetch --animation typewriter                            # animated reveal on startup
+kotofetch --animation scramble --animation-duration-ms 2000 # scramble with a 2-second duration
 ```
 
 ### Translation Modes
@@ -241,6 +248,22 @@ kotofetch --modes anime,mycustomquotes    # display quotes from specific files
 Multiple modes can be combined by passing a comma-separated list: `--translation english,romaji` or `--translation furigana,english`. Modes are displayed in the order given.
 
 Furigana displays readings aligned with their kanji, supporting both single-kanji annotations (`知(し)`) and compound words (`大海(たいかい)`). Only quotes that include inline ruby markup in their `japanese` field will show furigana readings. Use `--furigana-position above` (or `furigana_position = "above"` in config) to render readings above the Japanese text instead of below.
+
+### Animations
+
+Animations play once on startup, revealing the Japanese text, furigana, and translation together. They are skipped automatically when output is piped.
+
+| Animation | Description |
+|:----------|:------------|
+| `none` | No animation (default) |
+| `typewriter` | Characters appear one by one, left to right |
+| `scramble` | Characters cycle through random kana/ASCII before settling into the real text |
+| `slide` | Text streams in from the left |
+
+Use `--animation-duration-ms` to control the total playback time (default: `1000` ms).
+
+When combined with `--dynamic`, the animation plays once on the first frame and the dynamic re-centering loop takes over afterwards.
+
 
 ## Autocompletion
 

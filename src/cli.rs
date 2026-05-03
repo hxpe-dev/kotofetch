@@ -79,6 +79,14 @@ pub struct Cli {
     /// Show furigana above or below the Japanese text
     #[arg(long, value_enum)]
     pub furigana_position: Option<FuriganaPosition>,
+
+    // Animation type for the initial reveal
+    #[arg(long, value_enum)]
+    pub animation: Option<AnimationType>,
+
+    // Total animation duration in milliseconds
+    #[arg(long)]
+    pub animation_duration_ms: Option<u64>,
 }
 
 #[derive(Subcommand, Debug)]
@@ -152,4 +160,12 @@ pub enum TranslationMode {
 pub enum FuriganaPosition {
     Above,
     Below,
+}
+
+#[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]
+pub enum AnimationType {
+    None,
+    Typewriter,
+    Scramble,
+    Slide,
 }
