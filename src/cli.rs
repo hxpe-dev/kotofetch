@@ -3,7 +3,7 @@ use clap_complete::Shell;
 use std::path::PathBuf;
 
 #[derive(Parser, Debug)]
-#[command(author, version, about)]
+#[command(name = "kotofetch", author, version, about)]
 pub struct Cli {
     #[command(subcommand)]
     pub command: Option<Commands>,
