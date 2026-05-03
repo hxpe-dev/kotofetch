@@ -19,6 +19,7 @@
 - [Usage](#usage)
   - [Translation Modes](#translation-modes)
   - [Animations](#animations)
+- [Autocompletion](#autocompletion)
 - [Community Showcase](#community-showcase)
 - [Contributing](#contributing)
 
@@ -263,6 +264,16 @@ Use `--animation-duration-ms` to control the total playback time (default: `1000
 
 When combined with `--dynamic`, the animation plays once on the first frame and the dynamic re-centering loop takes over afterwards.
 
+
+## Autocompletion
+
+You can get the script by running this command:
+```bash
+kotofetch completion <SHELL>
+```
+The setup depends on the specific shell.
+
+The supported shells are those supported by the currently used `clap_complete` version.
 
 ## Community Showcase
 
