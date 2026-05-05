@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.2.22
+
+### Added
+- Animations (#31)
+- Shell autocompletion (#30)
+
+### Fixed
+- Help comments (#29)
+
+
 ## v0.2.21
 
 ### Added
