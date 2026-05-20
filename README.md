@@ -305,6 +305,9 @@ A huge thanks to the community members who shared their setups!
 
 ## Contributing
 Contributions are welcome (donations too, they support me a lot in my work)! Here's how you can help:
+
+If you use any AI tools for your contribution, please specify which AI tool was used and for what in the commit message.
+
 1. **Fork** the repository.
 2. **Clone** your fork locally:
 ```bash
