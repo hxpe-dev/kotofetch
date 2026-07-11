@@ -8,6 +8,7 @@
 ## Contents
 - [Installation](#installation)
   - [Arch Linux / AUR](#arch-linux--aur)
+  - [Homebrew (macOS / Linux)](#homebrew-macos--linux)
   - [Nix / NixOS](#nix--nixos)
   - [Prebuilt Binaries](#prebuilt-binaries)
   - [From Source](#from-source)
@@ -42,6 +43,14 @@ git clone https://aur.archlinux.org/kotofetch.git
 cd kotofetch
 makepkg -si
 ```
+
+### Homebrew (macOS / Linux)
+You can install `kotofetch` natively via Homebrew. 
+```bash
+brew install kotofetch
+```
+>[!NOTE]
+>Huge thanks to the community member who independently packaged and submitted kotofetch to the official Homebrew Core repository!
 
 ### Nix / NixOS
 If you use Nix, you can install `kotofetch` using those commands:
