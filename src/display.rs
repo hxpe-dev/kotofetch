@@ -274,6 +274,7 @@ fn blank_line(
     }
 }
 
+#[must_use]
 fn print_block(
     lines: &[String],
     style: Style,
@@ -283,7 +284,8 @@ fn print_block(
     box_width: usize,
     centered: bool,
     border_color: &Style,
-) {
+) -> usize {
+    let mut printed = 0usize;
     for line in lines {
         for wline in wrap(line, inner_width) {
             let content = align_in_box(wline.as_ref(), inner_width, centered);
@@ -304,10 +306,13 @@ fn print_block(
                 )
             };
             println!("{}", pad_to_center(&line, box_width, centered));
+            printed += 1;
         }
     }
+    printed
 }
 
+#[must_use]
 fn print_boxed(
     text_lines: Vec<String>,
     jap_style: Style,
@@ -325,7 +330,12 @@ fn print_boxed(
     centered: bool,
     furigana_lines: Vec<String>,
     furigana_above: bool,
-) {
+) -> usize {
+    let mut printed = 0usize;
+    macro_rules! emit {
+        ($($arg:tt)*) => {{ println!($($arg)*); printed += 1; }};
+    }
+
     // Compute max natural width of content
     let mut max_width = 0;
     for line in &text_lines {
@@ -370,7 +380,7 @@ fn print_boxed(
             horiz.repeat(inner_width + horizontal_padding * 2),
             top_right
         );
-        println!(
+        emit!(
             "{}",
             border_color.apply_to(pad_to_center(&line, box_width, centered))
         );
@@ -378,7 +388,7 @@ fn print_boxed(
 
     // Vertical padding (top)
     for _ in 0..vertical_padding {
-        println!(
+        emit!(
             "{}",
             pad_to_center(
                 &blank_line(inner_width, horizontal_padding, border, &border_color),
@@ -425,9 +435,9 @@ fn print_boxed(
                     translation_style.apply_to(&content)
                 )
             };
-            println!("{}", pad_to_center(&line, box_width, centered));
+            emit!("{}", pad_to_center(&line, box_width, centered));
         }
-        println!(
+        emit!(
             "{}",
             pad_to_center(
                 &blank_line(inner_width, horizontal_padding, border, &border_color),
@@ -438,7 +448,7 @@ fn print_boxed(
     }
 
     // Japanese text
-    print_block(
+    printed += print_block(
         &text_lines,
         jap_style,
         inner_width,
@@ -451,7 +461,7 @@ fn print_boxed(
 
     // Furigana below Japanese text
     if !furigana_above && !furigana_lines.is_empty() {
-        println!(
+        emit!(
             "{}",
             pad_to_center(
                 &blank_line(inner_width, horizontal_padding, border, &border_color),
@@ -493,13 +503,13 @@ fn print_boxed(
                     translation_style.apply_to(&content)
                 )
             };
-            println!("{}", pad_to_center(&line, box_width, centered));
+            emit!("{}", pad_to_center(&line, box_width, centered));
         }
     }
 
     // Translations
     for t in translations {
-        println!(
+        emit!(
             "{}",
             pad_to_center(
                 &blank_line(inner_width, horizontal_padding, border, &border_color),
@@ -507,7 +517,7 @@ fn print_boxed(
                 centered
             )
         );
-        print_block(
+        printed += print_block(
             &[t.to_string()],
             translation_style.clone(),
             inner_width,
@@ -522,7 +532,7 @@ fn print_boxed(
     // Source
     if show_source {
         if let Some(s) = source {
-            println!(
+            emit!(
                 "{}",
                 pad_to_center(
                     &blank_line(inner_width, horizontal_padding, border, &border_color),
@@ -541,7 +551,7 @@ fn print_boxed(
                     }
                 })
                 .collect();
-            print_block(
+            printed += print_block(
                 &wrapped,
                 source_style,
                 inner_width,
@@ -556,7 +566,7 @@ fn print_boxed(
 
     // Vertical padding (bottom)
     for _ in 0..vertical_padding {
-        println!(
+        emit!(
             "{}",
             pad_to_center(
                 &blank_line(inner_width, horizontal_padding, border, &border_color),
@@ -574,11 +584,13 @@ fn print_boxed(
             horiz.repeat(inner_width + horizontal_padding * 2),
             bottom_right
         );
-        println!(
+        emit!(
             "{}",
             border_color.apply_to(pad_to_center(&line, box_width, centered))
         );
     }
+
+    printed
 }
 
 fn clear_screen() {
@@ -615,7 +627,8 @@ struct CursorGuard;
 
 impl CursorGuard {
     fn new() -> Self {
-        print!("\x1B[?25l");
+        // hide cursor + disable auto-wrap: an overlong line must not soft-wrap, or it costs 2 physical rows and the ESC[nA rewind desyncs
+        print!("\x1B[?25l\x1B[?7l");
         let _ = io::stdout().flush();
         CursorGuard
     }
@@ -623,7 +636,7 @@ impl CursorGuard {
 
 impl Drop for CursorGuard {
     fn drop(&mut self) {
-        print!("\x1B[?25h");
+        print!("\x1B[?7h\x1B[?25h");
         let _ = io::stdout().flush();
     }
 }
@@ -797,7 +810,17 @@ fn play_animation(
 
     let mut rng = StdRng::seed_from_u64(seed);
 
+    let _ = ctrlc::set_handler(|| {
+        print!("\x1B[?7h\x1B[?25h");
+        let _ = io::stdout().flush();
+        std::process::exit(130);
+    });
+
     let _guard = CursorGuard::new();
+
+    // box_height() is only an estimate: print_boxed re-wraps content against the
+    // terminal-clamped inner_width, so it can emit more lines than predicted.
+    let mut last_height = height;
 
     for i in 0..=frame_count {
         let is_final = i == frame_count;
@@ -863,10 +886,11 @@ fn play_animation(
         let src = if is_final { real_source } else { blank_source };
 
         if i > 0 {
-            print!("\x1B[{}A", height);
+            // print!("\x1B[{}A\x1B[0J", last_height);
+            print!("\x1B[{}A", last_height);
         }
 
-        print_boxed(
+        last_height = print_boxed(
             frame_jap,
             jap_style.clone(),
             horizontal_padding,
@@ -884,6 +908,10 @@ fn play_animation(
             furi,
             furigana_above,
         );
+
+
+        // Erase any leftover rows below the frame we just drew
+        print!("\x1B[0J");
 
         let _ = io::stdout().flush();
 
@@ -1094,7 +1122,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
                 io::stdout().flush().unwrap();
             } else {
                 // Render centered block
-                print_boxed(
+                let _ = print_boxed(
                     jap_lines.clone(),
                     jap_style.clone(),
                     horizontal,
@@ -1156,7 +1184,7 @@ pub fn render(runtime: &RuntimeConfig, cli: &crate::cli::Cli) {
         );
     } else {
         // Normal static render
-        print_boxed(
+        let _ = print_boxed(
             jap_lines,
             jap_style,
             runtime.horizontal_padding,
