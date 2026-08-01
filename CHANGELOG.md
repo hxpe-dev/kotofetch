@@ -1,9 +1,6 @@
 # Changelog
 
-## v0.2.23 (not out yet)
-
-### Added
-- 
+## v0.2.23
 
 ### Fixed
 - Animations issues (#32)
