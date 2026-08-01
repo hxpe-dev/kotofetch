@@ -909,7 +909,6 @@ fn play_animation(
             furigana_above,
         );
 
-
         // Erase any leftover rows below the frame we just drew
         print!("\x1B[0J");
 
